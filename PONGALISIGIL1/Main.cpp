@@ -1,9 +1,10 @@
-#include "Game/Game.h"
+#include "game.h"
 
 //------------------------------------------------------------------------------------
 // Program main entry point
 //------------------------------------------------------------------------------------
-void main(Button singlePlayer)
+void main()
 {
-	RunProgram(singlePlayer);
+	slWindow(46, 50, "LOCO", 20);
+
 }
