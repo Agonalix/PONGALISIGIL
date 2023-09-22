@@ -1,2 +1,4 @@
 #pragma once
-#include "include/sl.h"
+#include "Button.h"
+
+void RunProgram(Button& singlePlayer);

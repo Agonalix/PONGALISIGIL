@@ -1,10 +1,12 @@
 #pragma once
 #include "include/sl.h"
+#include "Vector2.h"
+#include "colors.h"
 
 struct Button
 {
 	int width;
 	int height;
-	int positionX;
-	int positionY;
+	Vector2 position;
+	color color;
 };

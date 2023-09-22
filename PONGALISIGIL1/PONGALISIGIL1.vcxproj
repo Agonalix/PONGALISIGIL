@@ -152,11 +152,12 @@ copy/y "$(SolutionDir)lib\wrap_oal.dll" "$(OutDir)"</Command>
   <ItemGroup>
     <ClInclude Include="ball.h" />
     <ClInclude Include="button.h" />
-    <ClInclude Include="Colors.h" />
+    <ClInclude Include="colors.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="menu.h" />
     <ClInclude Include="rectangle.h" />
     <ClInclude Include="scenes.h" />
+    <ClInclude Include="Vector2.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

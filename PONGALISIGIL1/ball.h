@@ -1,13 +1,11 @@
 #pragma once
+#include "Vector2.h";
 
 struct ball
 {
-	int sizeX;
-	int sizeY;
-	int positionX;
-	int positionY;
-	int speedX;
-	int speedY;
+	Vector2 size;
+	Vector2 position;
+	Vector2 speed;
 };
 
 void BallMovement(ball& Ball);
