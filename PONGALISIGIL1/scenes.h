@@ -4,7 +4,7 @@ enum class Scenes
 {
 	Menu,
 	SinglePlayerGame,
-	MultiPlayerGame,
+	Rules,
 	GameOver,
 	Exit
 };

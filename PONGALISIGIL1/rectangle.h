@@ -9,6 +9,4 @@ struct rectangle
     int speed;
     int score;
 };
-void SecondPlayerMovement(rectangle& secondPlayer, rectangle& firstPlayer);
 void FirstPlayerMovement(rectangle& firstPlayer);
-void IAPlayerMovement(rectangle& IAPlayer, ball& Ball);

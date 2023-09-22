@@ -7,15 +7,13 @@
 
 //-----------------------------------------------------------------------------------------------------------------------
 //Start Game
-void GameLoop(Button& singlePlayer);
+void GameLoop();
 void GameOver(rectangle& firstPlayer, rectangle& secondPlayer, ball& Ball);
-void MultiPlayerMode(rectangle& firstPlayer, rectangle& secondPlayer, ball& Ball);
 void singlePlayerMode(rectangle& firstPlayer, rectangle& IAPlayer, ball& Ball);
 void ReturnToStartingPosition(rectangle& firstPlayer, rectangle& secondPlayer, ball& Ball);
 void GameDraw(rectangle& firstPlayer, rectangle& secondPlayer, ball& Ball);
 bool isWinner(rectangle& firstPlayer, rectangle& secondPlayer);
 void InitializeGameSingle(rectangle& firstPlayer, rectangle& secondPlayer, ball& ball); // inicializacion de las variables
-void InitializeGameMulti(rectangle& firstPlayer, rectangle& IAPlayer, ball& ball);
 void reset(rectangle& firstPlayer, rectangle& secondPlayer, rectangle& IAPlayer, ball& ball);
 bool isScoring(rectangle& firstPlayer, rectangle& secondPlayer, ball Ball);
 
@@ -28,16 +26,18 @@ void RandomBallStart(ball& Ball);
 
 
 static Scenes scene = Scenes::Menu;
+int ScreenWidth = 900;
+int ScreenHeight = 500;
 
-void RunProgram(Button& singlePlayer)
+void RunProgram()
 {
 	//Sizes
-	InitWindow(GetScreenWidth(), GetScreenHeight(), "PONGALIX");
+	slWindow(ScreenWidth, ScreenHeight, "LOCO", 20);
 	SetExitKey(KEY_NULL);
 	GameLoop(singlePlayer);
 }
 
-void GameLoop(Button& singlePlayer)
+void GameLoop()
 {
 	// Initialization
 	//--------------------------------------------------------------------------------------
@@ -60,14 +60,14 @@ void GameLoop(Button& singlePlayer)
 		{
 		case Scenes::Menu:
 			reset(firstPlayer, secondPlayer, IAPlayer, Ball);
-			Menu(scene);
+			MenuLoop(scene);
 			break;
 
 		case Scenes::SinglePlayerGame:
 			singlePlayerMode(firstPlayer, IAPlayer, Ball);
 			break;
 
-		case Scenes::MultiPlayerGame:
+		case Scenes::Rules:
 			MultiPlayerMode(firstPlayer, secondPlayer, Ball);
 			break;
 
@@ -82,49 +82,6 @@ void GameLoop(Button& singlePlayer)
 	}
 }
 
-void MultiPlayerMode(rectangle& firstPlayer, rectangle& secondPlayer, ball& Ball)
-{
-	// Update
-	//----------------------------------------------------------------------------------
-	//----------------------------------------------------------------------------------
-
-	//First player
-	//----------------------------------------------------------------------------------
-	if (isWinner(firstPlayer, secondPlayer) != true)
-	{
-		if (IsKeyPressed(KEY_BACKSPACE))
-		{
-			scene = Scenes::Menu;
-			return;
-		}
-
-
-		FirstPlayerMovement(firstPlayer);
-
-		//Second player
-		//----------------------------------------------------------------------------------
-
-		SecondPlayerMovement(secondPlayer, firstPlayer);
-
-		// Pelota
-		//----------------------------------------------------------------------------------
-		BallMovement(Ball);
-
-		//Colisiones
-		//----------------------------------------------------------------------------------
-
-		BorderBallCollision(Ball);
-		BallPlayerCollision(firstPlayer, Ball, secondPlayer);
-
-		ReturnToStartingPosition(firstPlayer, secondPlayer, Ball);
-
-		GameDraw(firstPlayer, secondPlayer, Ball);
-	}
-	else
-	{
-		scene = Scenes::GameOver;
-	}
-}
 void singlePlayerMode(rectangle& firstPlayer, rectangle& IAPlayer, ball& Ball)
 {
 	// Update
@@ -191,7 +148,7 @@ void reset(rectangle& firstPlayer, rectangle& secondPlayer, rectangle& IAPlayer,
 
 	//--------------------------------------------------------------------------------------
 	//ball
-	ball.Position = { (float)GetScreenWidth() / 2, (float)GetScreenHeight() / 2 };
+	ball.Position = { ScreenWidth / 2, ScreenHeight / 2 };
 	ball.Size = { 25, 25 };
 	ball.speed.x = 575;
 	ball.speed.y = 525;
@@ -214,44 +171,9 @@ void InitializeGameSingle(rectangle& firstPlayer, rectangle& secondPlayer, ball&
 
 	//--------------------------------------------------------------------------------------
 	//ball
-	ball.Position = { (float)GetScreenWidth() / 2, (float)GetScreenHeight() / 2 };
+	ball.Position = { ScreenWidth / 2, ScreenHeight / 2 };
 	ball.Size = { 25, 25 };
 	ball.speed.x = 525;
-	ball.speed.y = 525;
-
-	if (GetRandomValue(0, 1) == 0)
-	{
-		ball.Position.x -= ball.speed.x * GetFrameTime();
-		ball.Position.y -= ball.speed.y * GetFrameTime();
-	}
-	else
-	{
-		ball.Position.x += ball.speed.x * GetFrameTime();
-		ball.Position.y += ball.speed.y * GetFrameTime();
-	}
-
-}
-void InitializeGameMulti(rectangle& firstPlayer, rectangle& IAPlayer, ball& ball)
-{
-	//--------------------------------------------------------------------------------------
-	//FirstPlayer
-	firstPlayer.Position = { 20, 395 };
-	firstPlayer.Size = { 25, 185 };
-	firstPlayer.speed = 720;
-	firstPlayer.score = 0;
-
-	//--------------------------------------------------------------------------------------
-	//SecondPlayer
-	IAPlayer.Position = { 1875, 395 };
-	IAPlayer.Size = { 25, 185 };
-	IAPlayer.speed = 425;
-	IAPlayer.score = 0;
-
-	//--------------------------------------------------------------------------------------
-	//ball
-	ball.Position = { (float)GetScreenWidth() / 2, (float)GetScreenHeight() / 2 };
-	ball.Size = { 25, 25 };
-	ball.speed.x = 575;
 	ball.speed.y = 525;
 
 	if (GetRandomValue(0, 1) == 0)
@@ -278,7 +200,7 @@ void GameDraw(rectangle& firstPlayer, rectangle& secondPlayer, ball& Ball)
 
 	DrawText("PONG", 850, 465, 80, DARKGRAY);
 	DrawText(TextFormat("%01i", firstPlayer.score), 200, 80, 100, WHITE);
-	DrawText(TextFormat("%01i", secondPlayer.score), GetScreenWidth() - 280, 80, 100, WHITE);
+	DrawText(TextFormat("%01i", secondPlayer.score), ScreenWidth - 280, 80, 100, WHITE);
 
 	//Players
 	//----------------------------------------------------------------------------------
@@ -347,13 +269,13 @@ void GameOver(rectangle& firstPlayer, rectangle& secondPlayer, ball& Ball)
 	ClearBackground(BLACK);
 	if (firstPlayer.score == 10)
 	{
-		DrawText("PLAYER ONE WINS", GetScreenWidth() / 2 - MeasureText("PLAYER ONE WINS", fontSize) / 2, GetScreenHeight() / 2 - fontSize, fontSize, WHITE);
-		DrawText("Press SPACE to continue...", GetScreenWidth() - MeasureText("Press SPACE to continue...", fontSizeContinue), GetScreenHeight() - 55, fontSizeContinue, WHITE);
+		DrawText("PLAYER ONE WINS", ScreenWidth / 2 - MeasureText("PLAYER ONE WINS", fontSize) / 2, ScreenHeight / 2 - fontSize, fontSize, WHITE);
+		DrawText("Press SPACE to continue...", ScreenWidth - MeasureText("Press SPACE to continue...", fontSizeContinue), ScreenHeight - 55, fontSizeContinue, WHITE);
 	}
 	else if (secondPlayer.score == 10)
 	{
-		DrawText("PLAYER TWO WINS", GetScreenWidth() / 2 - MeasureText("PLAYER TWO WINS", fontSize) / 2, GetScreenHeight() / 2 - fontSize, fontSize, WHITE);
-		DrawText("Press SPACE to continue...", GetScreenWidth() - MeasureText("Press SPACE to continue...", fontSizeContinue), GetScreenHeight() - 55, fontSizeContinue, WHITE);
+		DrawText("PLAYER TWO WINS", ScreenWidth / 2 - MeasureText("PLAYER TWO WINS", fontSize) / 2, ScreenHeight / 2 - fontSize, fontSize, WHITE);
+		DrawText("Press SPACE to continue...", ScreenWidth - MeasureText("Press SPACE to continue...", fontSizeContinue), ScreenHeight - 55, fontSizeContinue, WHITE);
 	}
 	EndDrawing();
 }
@@ -362,8 +284,8 @@ void ReturnToStartingPosition(rectangle& firstPlayer, rectangle& secondPlayer, b
 {
 	if (isScoring(firstPlayer, secondPlayer, Ball)) // Si suma un punto alguno de los jugadores, la pelota vuelve al (0;0)
 	{
-		Ball.Position.x = GetScreenWidth() / 2.0f;
-		Ball.Position.y = GetScreenHeight() / 2.0f;
+		Ball.Position.x = ScreenWidth / 2.0f;
+		Ball.Position.y = ScreenHeight / 2.0f;
 		RandomBallStart(Ball);
 	}
 	//----------------------------------------------------------------------------------
@@ -431,7 +353,7 @@ void BallPlayerCollision(const rectangle& firstPlayer, ball& Ball, const rectang
 }
 bool isScoring(rectangle& firstPlayer, rectangle& secondPlayer, ball Ball)
 {
-	if (Ball.Position.x >= (float)GetScreenWidth())
+	if (Ball.Position.x >= ScreenWidth)
 	{
 		firstPlayer.score++;
 		return true;

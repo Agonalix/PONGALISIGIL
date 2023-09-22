@@ -3,8 +3,8 @@
 
 struct ball
 {
-	Vector2 size;
-	Vector2 position;
+	Vector2 Size;
+	Vector2 Position;
 	Vector2 speed;
 };
 
