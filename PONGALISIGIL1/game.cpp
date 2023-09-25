@@ -3,25 +3,27 @@
 #include "game.h"
 #include "menu.h"
 #include "scenes.h"
+#include <iostream>
 
+using namespace colors;
 
 //-----------------------------------------------------------------------------------------------------------------------
 //Start Game
 void GameLoop();
 void GameOver(rectangle& firstPlayer, rectangle& secondPlayer, ball& Ball);
-void singlePlayerMode(rectangle& firstPlayer, rectangle& IAPlayer, ball& Ball);
-void ReturnToStartingPosition(rectangle& firstPlayer, rectangle& secondPlayer, ball& Ball);
-void GameDraw(rectangle& firstPlayer, rectangle& secondPlayer, ball& Ball);
-bool isWinner(rectangle& firstPlayer, rectangle& secondPlayer);
-void InitializeGameSingle(rectangle& firstPlayer, rectangle& secondPlayer, ball& ball); // inicializacion de las variables
-void reset(rectangle& firstPlayer, rectangle& secondPlayer, rectangle& IAPlayer, ball& ball);
-bool isScoring(rectangle& firstPlayer, rectangle& secondPlayer, ball Ball);
+void singlePlayerMode(rectangle& firstPlayer, ball& Ball);
+void ReturnToStartingPosition(rectangle& firstPlayer, ball& Ball);
+void GameDraw(rectangle& firstPlayer, ball& Ball);
+bool isWinner(rectangle& firstPlayer);
+void InitializeGameSingle(rectangle& firstPlayer, ball& ball); // inicializacion de las variables
+void reset(rectangle& firstPlayer, ball& ball);
+bool isScoring(rectangle& firstPlayer, ball Ball);
 
 
 //-----------------------------------------------------------------------------------------------------------------------
 //Game Mechanics
 bool Collision(rectangle Player, ball Ball);
-void BallPlayerCollision(const rectangle& firstPlayer, ball& Ball, const rectangle& secondPlayer);
+void BallPlayerCollision(const rectangle& firstPlayer, ball& Ball);
 void RandomBallStart(ball& Ball);
 
 
@@ -32,9 +34,7 @@ int ScreenHeight = 500;
 void RunProgram()
 {
 	//Sizes
-	slWindow(ScreenWidth, ScreenHeight, "LOCO", 20);
-	SetExitKey(KEY_NULL);
-	GameLoop(singlePlayer);
+	GameLoop();
 }
 
 void GameLoop()
@@ -50,25 +50,25 @@ void GameLoop()
 
 	//Inicio random de la pelota
 	RandomBallStart(Ball);
-	InitializeGameSingle(firstPlayer, secondPlayer, Ball);
-	InitializeGameMulti(firstPlayer, IAPlayer, Ball);
+	InitializeGameSingle(firstPlayer, Ball);
 
+	slWindow(ScreenWidth, ScreenHeight, "Breakout", 20);
 
-	while (scene != Scenes::Exit && !WindowShouldClose())    // Detect window close button or ESC key
+	while (scene != Scenes::Exit && !slShouldClose())    // Detect window close button or ESC key
 	{
 		switch (scene)
 		{
 		case Scenes::Menu:
-			reset(firstPlayer, secondPlayer, IAPlayer, Ball);
-			MenuLoop(scene);
+			reset(firstPlayer, Ball);
+			MenuLoop(scene, ScreenHeight, ScreenWidth);
 			break;
 
 		case Scenes::SinglePlayerGame:
-			singlePlayerMode(firstPlayer, IAPlayer, Ball);
+			singlePlayerMode(firstPlayer, Ball);
 			break;
 
 		case Scenes::Rules:
-			MultiPlayerMode(firstPlayer, secondPlayer, Ball);
+			rulesDraw();
 			break;
 
 		case Scenes::GameOver:
@@ -79,21 +79,23 @@ void GameLoop()
 		case Scenes::Exit:
 			break;
 		}
+		slRender();
 	}
+	slClose();
 }
 
-void singlePlayerMode(rectangle& firstPlayer, rectangle& IAPlayer, ball& Ball)
+void singlePlayerMode(rectangle& firstPlayer, ball& Ball)
 {
 	// Update
 	//----------------------------------------------------------------------------------
 	//----------------------------------------------------------------------------------
-	if (IsKeyPressed(KEY_BACKSPACE))
+	if (slGetKey(SL_KEY_BACKSPACE))
 	{
 		scene = Scenes::Menu;
 		return;
 	}
 
-	if (isWinner(firstPlayer, IAPlayer) != true)
+	if (isWinner(firstPlayer) != true)
 	{
 		// Pelota
 		//----------------------------------------------------------------------------------
@@ -101,29 +103,25 @@ void singlePlayerMode(rectangle& firstPlayer, rectangle& IAPlayer, ball& Ball)
 
 		//First player
 		//----------------------------------------------------------------------------------
-		FirstPlayerMovement(firstPlayer);
-
-
-		//IA player
-		//----------------------------------------------------------------------------------
-		IAPlayerMovement(IAPlayer, Ball);
+		FirstPlayerMovement(firstPlayer, ScreenHeight);
 
 		//Colisiones
 		//----------------------------------------------------------------------------------
 
-		BorderBallCollision(Ball);
-		BallPlayerCollision(firstPlayer, Ball, IAPlayer);
+		BorderBallCollision(Ball, ScreenHeight, ScreenWidth);
+		BallPlayerCollision(firstPlayer, Ball);
 
-		ReturnToStartingPosition(firstPlayer, IAPlayer, Ball);
+		ReturnToStartingPosition(firstPlayer, Ball);
 
-		GameDraw(firstPlayer, IAPlayer, Ball);
+		GameDraw(firstPlayer, Ball);
 	}
 	else
 	{
 		scene = Scenes::GameOver;
 	}
 }
-void reset(rectangle& firstPlayer, rectangle& secondPlayer, rectangle& IAPlayer, ball& ball)
+
+void reset(rectangle& firstPlayer, ball& ball)
 {
 	//--------------------------------------------------------------------------------------
 	//FirstPlayer
@@ -131,20 +129,6 @@ void reset(rectangle& firstPlayer, rectangle& secondPlayer, rectangle& IAPlayer,
 	firstPlayer.Size = { 25, 185 };
 	firstPlayer.speed = 720;
 	firstPlayer.score = 0;
-
-	//--------------------------------------------------------------------------------------
-	//SecondPlayer
-	secondPlayer.Position = { 1875, 395 };
-	secondPlayer.Size = { 25, 185 };
-	secondPlayer.speed = 720;
-	secondPlayer.score = 0;
-
-	//--------------------------------------------------------------------------------------
-	//IA
-	IAPlayer.Position = { 1875, 395 };
-	IAPlayer.Size = { 25, 185 };
-	IAPlayer.speed = 425;
-	IAPlayer.score = 0;
 
 	//--------------------------------------------------------------------------------------
 	//ball
@@ -153,21 +137,16 @@ void reset(rectangle& firstPlayer, rectangle& secondPlayer, rectangle& IAPlayer,
 	ball.speed.x = 575;
 	ball.speed.y = 525;
 }
-void InitializeGameSingle(rectangle& firstPlayer, rectangle& secondPlayer, ball& ball)
+
+void InitializeGameSingle(rectangle& firstPlayer, ball& ball)
 {
+	srand(time(NULL));
 	//--------------------------------------------------------------------------------------
 	//FirstPlayer
-	firstPlayer.Position = { 20, 395 };
-	firstPlayer.Size = { 25, 185 };
+	firstPlayer.Position = { ScreenWidth / 2 - firstPlayer.Size.x, 10 };
+	firstPlayer.Size = { 185, 25 };
 	firstPlayer.speed = 720;
 	firstPlayer.score = 0;
-
-	//--------------------------------------------------------------------------------------
-	//SecondPlayer
-	secondPlayer.Position = { 1875, 395 };
-	secondPlayer.Size = { 25, 185 };
-	secondPlayer.speed = 720;
-	secondPlayer.score = 0;
 
 	//--------------------------------------------------------------------------------------
 	//ball
@@ -176,113 +155,102 @@ void InitializeGameSingle(rectangle& firstPlayer, rectangle& secondPlayer, ball&
 	ball.speed.x = 525;
 	ball.speed.y = 525;
 
-	if (GetRandomValue(0, 1) == 0)
+	if (rand() % 1 == 0)
 	{
-		ball.Position.x -= ball.speed.x * GetFrameTime();
-		ball.Position.y -= ball.speed.y * GetFrameTime();
+		ball.Position.x -= ball.speed.x * slGetDeltaTime();
+		ball.Position.y -= ball.speed.y * slGetDeltaTime();
 	}
 	else
 	{
-		ball.Position.x += ball.speed.x * GetFrameTime();
-		ball.Position.y += ball.speed.y * GetFrameTime();
+		ball.Position.x += ball.speed.x * slGetDeltaTime();
+		ball.Position.y += ball.speed.y * slGetDeltaTime();
 	}
 
 }
 
-void GameDraw(rectangle& firstPlayer, rectangle& secondPlayer, ball& Ball)
+void GameDraw(rectangle& firstPlayer, ball& Ball)
 {
 	// Draw
 	//----------------------------------------------------------------------------------
 	//----------------------------------------------------------------------------------
-	BeginDrawing();
-
-	ClearBackground(BLACK);
-
-	DrawText("PONG", 850, 465, 80, DARKGRAY);
-	DrawText(TextFormat("%01i", firstPlayer.score), 200, 80, 100, WHITE);
-	DrawText(TextFormat("%01i", secondPlayer.score), ScreenWidth - 280, 80, 100, WHITE);
+	slSetBackColor(BLACK.r, BLACK.g, BLACK.b);
 
 	//Players
 	//----------------------------------------------------------------------------------
-	DrawRectangleV(firstPlayer.Position, firstPlayer.Size, WHITE); // Player one Drawing
-	DrawRectangleV(secondPlayer.Position, secondPlayer.Size, WHITE); // Player two Drawing
+	slSetForeColor(WHITE.r, WHITE.g, WHITE.b, WHITE.a);
+	slRectangleFill(firstPlayer.Position.x, firstPlayer.Position.y, firstPlayer.Size.x, firstPlayer.Size.y); // Player one Drawing
 
 	//Ball
 	//----------------------------------------------------------------------------------
-	DrawRectangleV(Ball.Position, Ball.Size, WHITE); //Ball Drawing
-
-	EndDrawing();
+	slRectangleFill(Ball.Position.x, Ball.Position.y, Ball.Size.x, Ball.Size.y); // Player one Drawing
 	//----------------------------------------------------------------------------------
 }
+
 void RandomBallStart(ball& Ball)
 {
+	srand(time(NULL));
+
+	int randomNumber = rand() % 4 + 1;
+
 	//Random number to start the ball
 	//------------------------------------------------------------------------------------------
-	if (GetRandomValue(0, 1) == 0)
+	if (randomNumber == 1)
 	{
-		if (GetRandomValue(0, 1) == 0)
-		{
-			Ball.speed.x *= -1;
-			Ball.speed.y = -1;
-		}
-		else
-		{
-			Ball.speed.x = Ball.speed.x;
-			Ball.speed.y = Ball.speed.y;
-		}
+		Ball.speed.x = -Ball.speed.x;
+		Ball.speed.y = -Ball.speed.y;
+	}
+	else if (randomNumber == 2)
+	{
+		Ball.speed.x = Ball.speed.x;
+		Ball.speed.y = Ball.speed.y;
+	}
+	else if (randomNumber == 3)
+	{
+		Ball.speed.x = -Ball.speed.x;
+		Ball.speed.y = -Ball.speed.y;
 	}
 	else
 	{
-		if (GetRandomValue(0, 1) == 0)
-		{
-			Ball.speed.x *= -1;
-			Ball.speed.y *= -1;
-		}
-		else
-		{
-			Ball.speed.x = Ball.speed.x;
-			Ball.speed.y = Ball.speed.y;
-		}
+		Ball.speed.x = Ball.speed.x;
+		Ball.speed.y = Ball.speed.y;
 	}
 }
-bool isWinner(rectangle& firstPlayer, rectangle& secondPlayer)
+
+bool isWinner(rectangle& firstPlayer)
 {
-	if (firstPlayer.score == 10 || secondPlayer.score == 10)
+	if (firstPlayer.score == 10)
 	{
 		return true;
 	}
 	return false;
 }
+
 void GameOver(rectangle& firstPlayer, rectangle& secondPlayer, ball& Ball)
 {
 
 	int fontSize = 100;
 	int fontSizeContinue = 30;
-	if (IsKeyPressed(KEY_SPACE))
+	if (slGetKey(SL_KEY_ESCAPE))
 	{
 		RandomBallStart(Ball);
-		InitializeGameSingle(firstPlayer, secondPlayer, Ball);
+		InitializeGameSingle(firstPlayer, Ball);
 		scene = Scenes::Menu;
 	}
 
-	BeginDrawing();
-	ClearBackground(BLACK);
+	slSetBackColor(BLACK.r, BLACK.g, BLACK.b);
 	if (firstPlayer.score == 10)
 	{
-		DrawText("PLAYER ONE WINS", ScreenWidth / 2 - MeasureText("PLAYER ONE WINS", fontSize) / 2, ScreenHeight / 2 - fontSize, fontSize, WHITE);
-		DrawText("Press SPACE to continue...", ScreenWidth - MeasureText("Press SPACE to continue...", fontSizeContinue), ScreenHeight - 55, fontSizeContinue, WHITE);
+		slSetForeColor(WHITE.r, WHITE.g, WHITE.b, WHITE.a);
+		slSetFontSize(fontSize);
+		slText(ScreenWidth / 2 - slGetTextWidth("PLAYER ONE WINS") / 2, ScreenHeight / 2 - fontSize, "PLAYER ONE WINS");
+		slSetFontSize(fontSizeContinue);
+		slText(ScreenWidth - slGetTextWidth("Press SPACE to continue..."), ScreenHeight - 55, "Press SPACE to continue...");
 	}
-	else if (secondPlayer.score == 10)
-	{
-		DrawText("PLAYER TWO WINS", ScreenWidth / 2 - MeasureText("PLAYER TWO WINS", fontSize) / 2, ScreenHeight / 2 - fontSize, fontSize, WHITE);
-		DrawText("Press SPACE to continue...", ScreenWidth - MeasureText("Press SPACE to continue...", fontSizeContinue), ScreenHeight - 55, fontSizeContinue, WHITE);
-	}
-	EndDrawing();
 }
 
-void ReturnToStartingPosition(rectangle& firstPlayer, rectangle& secondPlayer, ball& Ball)
+void ReturnToStartingPosition(rectangle& firstPlayer, ball& Ball)
 {
-	if (isScoring(firstPlayer, secondPlayer, Ball)) // Si suma un punto alguno de los jugadores, la pelota vuelve al (0;0)
+	if (isScoring(firstPlayer, Ball)) // Si suma un punto alguno de los jugadores, la pelota vuelve al (0;0)
 	{
 		Ball.Position.x = ScreenWidth / 2.0f;
 		Ball.Position.y = ScreenHeight / 2.0f;
@@ -290,6 +258,7 @@ void ReturnToStartingPosition(rectangle& firstPlayer, rectangle& secondPlayer, b
 	}
 	//----------------------------------------------------------------------------------
 }
+
 bool Collision(rectangle Player, ball Ball)
 {
 	if (Player.Position.x + Player.Size.x >= Ball.Position.x &&
@@ -302,67 +271,37 @@ bool Collision(rectangle Player, ball Ball)
 
 	return false;
 }
-void BallPlayerCollision(const rectangle& firstPlayer, ball& Ball, const rectangle& secondPlayer)
+
+void BallPlayerCollision(const rectangle& firstPlayer, ball& Ball)
 {
 	if (Collision(firstPlayer, Ball))
 	{
-		if (Ball.Position.y > firstPlayer.Position.y + (firstPlayer.Size.y / 3) && Ball.Position.y < firstPlayer.Position.y + (firstPlayer.Size.y * (2.0f / 3.0f)))
+		if (Ball.Position.x > firstPlayer.Position.x + (firstPlayer.Size.x / 3) && Ball.Position.x < firstPlayer.Position.x + (firstPlayer.Size.x * (2.0f / 3.0f)))
 		{
-			Ball.Position.x = firstPlayer.Position.x + Ball.Size.x;
+			Ball.Position.y = firstPlayer.Position.y + Ball.Size.y;
 			Ball.speed.x *= -1;
 			Ball.speed.y = 0;
 		}
-		else if (Ball.Position.y < firstPlayer.Position.y + firstPlayer.Size.y / 3)
+		else if (Ball.Position.x < firstPlayer.Position.x + firstPlayer.Size.x / 3)
 		{
 			Ball.Position.x = firstPlayer.Position.x + Ball.Size.x;
 			Ball.speed.x *= -1;
 			Ball.speed.y = -525;
 
 		}
-		else if (Ball.Position.y > firstPlayer.Position.y + firstPlayer.Size.y * (2.0f / 3.0f))
+		else if (Ball.Position.x > firstPlayer.Position.x + firstPlayer.Size.x * (2.0f / 3.0f))
 		{
 			Ball.Position.x = firstPlayer.Position.x + Ball.Size.x;
-			Ball.speed.x *= -1;
-			Ball.speed.y = 525;
-		}
-
-	}
-	if (Collision(secondPlayer, Ball))
-	{
-		if (Ball.Position.y <= secondPlayer.Position.y + secondPlayer.Size.y / 3)
-		{
-			Ball.Position.x = secondPlayer.Position.x - Ball.Size.x;
-			Ball.speed.x *= -1;
-			Ball.speed.y = -525;
-
-		}
-		else if (Ball.Position.y >= secondPlayer.Position.y + secondPlayer.Size.y / 3 && Ball.Position.y <= secondPlayer.Position.y + secondPlayer.Size.y * (2.0f / 3.0f))
-		{
-			Ball.Position.x = secondPlayer.Position.x - Ball.Size.x;
-			Ball.speed.x *= -1;
-			Ball.speed.y = 0;
-		}
-		else if (Ball.Position.y >= secondPlayer.Position.y + secondPlayer.Size.y * (2.0f / 3.0f))
-		{
-			Ball.Position.x = secondPlayer.Position.x - Ball.Size.x;
 			Ball.speed.x *= -1;
 			Ball.speed.y = 525;
 		}
 
 	}
 }
-bool isScoring(rectangle& firstPlayer, rectangle& secondPlayer, ball Ball)
+
+bool isScoring(rectangle& firstPlayer, ball Ball)
 {
-	if (Ball.Position.x >= ScreenWidth)
-	{
-		firstPlayer.score++;
-		return true;
-	}
-	if (Ball.Position.x <= 0)
-	{
-		secondPlayer.score++;
-		return true;
-	}
+
 
 	return false;
 }

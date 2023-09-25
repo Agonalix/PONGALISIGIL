@@ -2,7 +2,7 @@
 
 using namespace colors;
 
-void MenuLoop(Scenes& scene)
+void MenuLoop(Scenes& scene, int ScreenHeight, int ScreenWidth)
 {
 	Vector2 mousePosition = { slGetMouseX(), slGetMouseY()};
 	Button singlePlayer;
@@ -11,8 +11,8 @@ void MenuLoop(Scenes& scene)
 	int fontSizeMENU = 120;
 	int fontSizeMODE = 90;
 	int fontSizeCredits = 30;
-	color currentColorSingle;
-	color currentColorMulti;
+	color currentColorSingle = BLACK;
+	color currentColorMulti = BLACK;
 
 	if (slGetKey(SL_KEY_ESCAPE))
 	{
@@ -20,37 +20,49 @@ void MenuLoop(Scenes& scene)
 	}
 	InitializeMenu(singlePlayer, Rules);
 	ButtonPressed(scene, mousePosition, singlePlayer, Rules);
-	ContrastColorWhenColliding(mousePosition, singlePlayer, currentColorSingle, Rules, currentColorMulti);
+	ContrastColorWhenColliding(mousePosition, singlePlayer, Rules, currentColorSingle, currentColorMulti);
 
-	MenuDraw(fontSizeMENU, singlePlayer, fontSizeMODE, currentColorSingle, Rules, currentColorMulti, fontSizeCredits);
+	MenuDraw(fontSizeMENU, singlePlayer, fontSizeMODE, Rules, fontSizeCredits, ScreenHeight, ScreenWidth, currentColorSingle, currentColorMulti);
 }
-void MenuDraw(int fontSizeMENU, Button& singlePlayer, int fontSizeMODE, const color& currentColorSingle, Button& rules, const color& currentColorMulti, int fontSizeCredits)
+void MenuDraw(int fontSizeMENU, Button& singlePlayer, int fontSizeMODE, Button& rules,  int fontSizeCredits, int ScreenHeight, int ScreenWidth, color currentColorSingle, color currentColorMulti)
 {
-	BeginDrawing();
-	slSetBackColor(0, 0, 0);
 	//----------------------------------------------------------------------------------------------
 	//Menu
-	DrawRectangle(25, 135, 350, 5, WHITE); //Subrayado
-	DrawText("MENU", 30, 25, fontSizeMENU, WHITE);
 
+	slSetBackColor(BLACK.r, BLACK.g, BLACK.b);
 
-	DrawRectangle(singlePlayer.position.x, singlePlayer.position.y, singlePlayer.width, singlePlayer.height, singlePlayer.color); //Click option
-	DrawText("Single-Player", singlePlayer.position.x, singlePlayer.position.y, fontSizeMODE, currentColorSingle);
+	// large text and fat line
+	slSetForeColor(WHITE.r, WHITE.g, WHITE.b, WHITE.a);
+	slSetFontSize(fontSizeMENU);
+	slText(30, 25, "MENU");
+	slRectangleFill(25, 135, 350, 5);
 
+	// smaller subtext
+	slSetFontSize(fontSizeMODE);
+	slText(singlePlayer.position.x, singlePlayer.position.y, "Single-Player");
 
+	slSetForeColor(BLACK.r, BLACK.g, BLACK.b, BLACK.a);
+	slRectangleFill(singlePlayer.position.x, singlePlayer.position.y, singlePlayer.width, singlePlayer.height);
 
-	DrawRectangle(rules.position.x, rules.position.y, rules.width, rules.height, rules.color); //Click option
-	DrawText("Rules", rules.position.x, rules.position.y, fontSizeMODE, currentColorMulti);
+	slSetForeColor(WHITE.r, WHITE.g, WHITE.b, WHITE.a);
+	slSetFontSize(fontSizeMODE);
+	slText(rules.position.x, rules.position.y, "Rules");
 
+	slSetForeColor(BLACK.r, BLACK.g, BLACK.b, BLACK.a);
+	slRectangleFill(singlePlayer.position.x, singlePlayer.position.y, singlePlayer.width, singlePlayer.height);
 
 	//----------------------------------------------------------------------------------------------
 	//Creditos
-	DrawText("Made by: Santiago Seara", GetScreenWidth() - slGetTextWidth("Made by: Santiago Seara"), GetScreenHeight() - fontSizeCredits * 2.5, fontSizeCredits, WHITE);
-	DrawText("Institution: Image Campus", GetScreenWidth() - slGetTextWidth("Institution: Image Campus"), GetScreenHeight() - fontSizeCredits * 1.5, fontSizeCredits, WHITE);
+	slSetForeColor(WHITE.r, WHITE.g, WHITE.b, WHITE.a);
+	slSetFontSize(fontSizeCredits);
+	slText(ScreenWidth - slGetTextWidth("Made by: Santiago Seara"), ScreenHeight - fontSizeCredits* 2.0, "Made by: Santiago Seara");
 
-	EndDrawing();
+	slSetForeColor(WHITE.r, WHITE.g, WHITE.b, WHITE.a);
+	slSetFontSize(fontSizeCredits);
+	slText(ScreenWidth - slGetTextWidth("Institution: Image Campus"), ScreenHeight - fontSizeCredits * 1.5, "Institution: Image Campus");
+
 }
-void ContrastColorWhenColliding(Vector2& mousePosition, Button& singlePlayer, color& currentColorSingle, Button& multiPlayer, color& currentColorMulti)
+void ContrastColorWhenColliding(Vector2& mousePosition, Button& singlePlayer, Button& multiPlayer, color currentColorSingle, color currentColorMulti)
 {
 	if (MouseRecCollision(mousePosition, singlePlayer) == true)
 	{
@@ -71,11 +83,11 @@ void ContrastColorWhenColliding(Vector2& mousePosition, Button& singlePlayer, co
 }
 void ButtonPressed(Scenes& scene, Vector2& mousePosition, Button& singlePlayer, Button& multiPlayer)
 {
-	if (MouseRecCollision(mousePosition, singlePlayer) == true && IsMouseButtonPressed(0))
+	if (MouseRecCollision(mousePosition, singlePlayer) == true && slGetMouseButton(SL_MOUSE_BUTTON_LEFT))
 	{
 		scene = Scenes::SinglePlayerGame;
 	}
-	else if (MouseRecCollision(mousePosition, multiPlayer) == true && IsMouseButtonPressed(0))
+	else if (MouseRecCollision(mousePosition, multiPlayer) == true && slGetMouseButton(SL_MOUSE_BUTTON_LEFT))
 	{
 		scene = Scenes::Rules;
 	}
@@ -104,4 +116,8 @@ void InitializeMenu(Button& singlePlayer, Button& multiPlayer)
 	multiPlayer.height = 90;
 	multiPlayer.color = BLACK;
 	multiPlayer.position = { 35, 325 };
+}
+void rulesDraw()
+{
+
 }

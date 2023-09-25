@@ -1,21 +1,20 @@
 #include "Rectangle.h"
 
 
-
-void FirstPlayerMovement(rectangle& firstPlayer)
+void FirstPlayerMovement(rectangle& firstPlayer, int ScreenHeight)
 {
-	if (IsKeyDown(KEY_W))
+	if (slGetKey(SL_KEY_RIGHT))
 	{
-		if (firstPlayer.Position.y >= 10)
+		if (firstPlayer.Position.x >= 10)
 		{
-			firstPlayer.Position.y -= firstPlayer.speed * GetFrameTime();
+			firstPlayer.Position.x -= firstPlayer.speed * slGetDeltaTime();
 		}
 	}
-	if (IsKeyDown(KEY_S))
+	if (slGetKey(SL_KEY_LEFT))
 	{
-		if (firstPlayer.Position.y <= GetScreenHeight() - firstPlayer.Size.y - 10)
+		if (firstPlayer.Position.x <= ScreenHeight - firstPlayer.Size.x - 10)
 		{
-			firstPlayer.Position.y += firstPlayer.speed * GetFrameTime();
+			firstPlayer.Position.x += firstPlayer.speed * slGetDeltaTime();
 		}
 	}
 }
