@@ -70,7 +70,7 @@ void GameLoop()
 
 		case Scenes::GameOver:
 			GameOver(firstPlayer, Ball);
-			GameOver(firstPlayer,Ball);
+			GameOver(firstPlayer, Ball);
 			break;
 
 		case Scenes::Exit:
@@ -140,7 +140,7 @@ void InitializeGameSingle(rectangle& firstPlayer, ball& ball)
 	srand(time(NULL));
 	//--------------------------------------------------------------------------------------
 	//FirstPlayer
-	firstPlayer.Position = { ScreenWidth /2 + firstPlayer.Size.x /2, ScreenHeight - 15 };
+	firstPlayer.Position = { ScreenWidth / 2 + firstPlayer.Size.x / 2, ScreenHeight - 15 };
 	firstPlayer.Size = { 185, 25 };
 	firstPlayer.speed = 720;
 	firstPlayer.score = 0;
@@ -258,10 +258,10 @@ void ReturnToStartingPosition(rectangle& firstPlayer, ball& Ball)
 
 bool Collision(rectangle Player, ball Ball)
 {
-	if (Player.Position.x + Player.Size.x >= Ball.Position.x &&
-		Player.Position.x <= Ball.Position.x + Ball.Size.x &&
-		Player.Position.y + Player.Size.y >= Ball.Position.y &&
-		Player.Position.y <= Ball.Position.y + Ball.Size.y) {
+	if (Player.Position.x + Player.Size.x / 2  >= Ball.Position.x - Ball.Size.x / 2 &&
+		Player.Position.x - Player.Size.x / 2 <= Ball.Position.x + Ball.Size.x / 2 &&
+		Player.Position.y + Player.Size.y / 2 >= Ball.Position.y - Ball.Size.x / 2 &&
+		Player.Position.y - Player.Size.y / 2 <= Ball.Position.y + Ball.Size.y / 2) {
 
 		return true;
 	}
@@ -273,26 +273,25 @@ void BallPlayerCollision(const rectangle& firstPlayer, ball& Ball)
 {
 	if (Collision(firstPlayer, Ball))
 	{
-		if (Ball.Position.x > firstPlayer.Position.x + (firstPlayer.Size.x / 3) && Ball.Position.x < firstPlayer.Position.x + (firstPlayer.Size.x * (2.0f / 3.0f)))
+		if (Ball.Position.x > firstPlayer.Position.x - firstPlayer.Size.x * (1.0f / 6.0f) &&
+			Ball.Position.x < firstPlayer.Position.x + firstPlayer.Size.x * (1.0f / 6.0f))
 		{
 			Ball.Position.y = firstPlayer.Position.y - Ball.Size.y;
-			Ball.speed.y *= -1;
+			Ball.speed.y = -Ball.speed.y;
 			Ball.speed.x = 0;
 		}
-		else if (Ball.Position.x < firstPlayer.Position.x + firstPlayer.Size.x / 3)
+		else if (Ball.Position.x < firstPlayer.Position.x - firstPlayer.Size.x * (1.0f / 6.0f))
 		{
 			Ball.Position.y = firstPlayer.Position.y - Ball.Size.x;
-			Ball.speed.y *= -1;
+			Ball.speed.y = -Ball.speed.y;
 			Ball.speed.x = -525;
-
 		}
-		else if (Ball.Position.x > firstPlayer.Position.x + firstPlayer.Size.x * (2.0f / 3.0f))
+		else if (Ball.Position.x > firstPlayer.Position.x + firstPlayer.Size.x * (1.0f / 6.0f))
 		{
 			Ball.Position.y = firstPlayer.Position.y - Ball.Size.x;
-			Ball.speed.y *= -1;
+			Ball.speed.y = -Ball.speed.y;
 			Ball.speed.x = 525;
 		}
-
 	}
 }
 
@@ -300,8 +299,7 @@ bool isScoring(rectangle& firstPlayer, ball Ball)
 {
 	if (Ball.Position.y >= ScreenHeight)
 	{
-		Ball.Position.x = ScreenWidth / 2;
-		Ball.Position.y = ScreenHeight / 2;
+		return true;
 	}
 
 	return false;

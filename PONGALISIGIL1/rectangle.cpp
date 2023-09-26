@@ -3,16 +3,16 @@
 
 void FirstPlayerMovement(rectangle& firstPlayer)
 {
-	if (slGetKey(SL_KEY_RIGHT))
+	if (slGetKey(SL_KEY_LEFT))
 	{
 		if (firstPlayer.Position.x >= firstPlayer.Size.x / 2 + 10)
 		{
 			firstPlayer.Position.x -= firstPlayer.speed * slGetDeltaTime();
 		}
 	}
-	if (slGetKey(SL_KEY_LEFT))
+	if (slGetKey(SL_KEY_RIGHT))
 	{
-		if (firstPlayer.Position.x <= ScreenWidth - firstPlayer.Size.x - 10)
+		if (firstPlayer.Position.x <= ScreenWidth - firstPlayer.Size.x /2 - 10)
 		{
 			firstPlayer.Position.x += firstPlayer.speed * slGetDeltaTime();
 		}
