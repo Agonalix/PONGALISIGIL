@@ -10,9 +10,9 @@ void BallMovement(ball& Ball)
 }
 void BorderBallCollision(ball& Ball)
 {
-	if (Ball.Position.y >= (ScreenHeight - Ball.Size.y))
+	if (Ball.Position.y <= 0)
 	{
-		Ball.Position.y = ScreenHeight - Ball.Size.y;
+		Ball.Position.y = Ball.Size.y;
 		Ball.speed.y *= -1;
 	}
 	else if (Ball.Position.x <= 0)

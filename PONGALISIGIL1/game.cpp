@@ -47,8 +47,8 @@ void GameLoop()
 	slWindow(ScreenWidth, ScreenHeight, "Breakout", true);
 	int font = slLoadFont("../HuLi-Regular.ttf");
 	//Inicio random de la pelota
-	/*RandomBallStart(Ball);
-	InitializeGameSingle(firstPlayer, Ball);*/
+	RandomBallStart(Ball);
+	InitializeGameSingle(firstPlayer, Ball);
 	scene = Scenes::Menu;
 
 	while (scene != Scenes::Exit && !slShouldClose() && !slGetKey(SL_KEY_ESCAPE))    // Detect window close button or ESC key
@@ -122,7 +122,7 @@ void reset(rectangle& firstPlayer, ball& ball)
 {
 	//--------------------------------------------------------------------------------------
 	//FirstPlayer
-	firstPlayer.Position = { ScreenWidth / 2 + firstPlayer.Size.x / 2, 15 };
+	firstPlayer.Position = { ScreenWidth / 2 + firstPlayer.Size.x / 2, ScreenHeight - 15 };
 	firstPlayer.Size = { 185, 25 };
 	firstPlayer.speed = 720;
 	firstPlayer.score = 0;
@@ -140,7 +140,7 @@ void InitializeGameSingle(rectangle& firstPlayer, ball& ball)
 	srand(time(NULL));
 	//--------------------------------------------------------------------------------------
 	//FirstPlayer
-	firstPlayer.Position = { ScreenWidth /2 + firstPlayer.Size.x /2, 15 };
+	firstPlayer.Position = { ScreenWidth /2 + firstPlayer.Size.x /2, ScreenHeight - 15 };
 	firstPlayer.Size = { 185, 25 };
 	firstPlayer.speed = 720;
 	firstPlayer.score = 0;
@@ -194,7 +194,7 @@ void RandomBallStart(ball& Ball)
 	if (randomNumber == 1)
 	{
 		Ball.speed.x = -Ball.speed.x;
-		Ball.speed.y = -Ball.speed.y;
+		Ball.speed.y = Ball.speed.y;
 	}
 	else if (randomNumber == 2)
 	{
@@ -203,13 +203,13 @@ void RandomBallStart(ball& Ball)
 	}
 	else if (randomNumber == 3)
 	{
-		Ball.speed.x = -Ball.speed.x;
+		Ball.speed.x = Ball.speed.x;
 		Ball.speed.y = -Ball.speed.y;
 	}
 	else
 	{
-		Ball.speed.x = Ball.speed.x;
-		Ball.speed.y = Ball.speed.y;
+		Ball.speed.x = -Ball.speed.x;
+		Ball.speed.y = -Ball.speed.y;
 	}
 }
 
@@ -275,20 +275,20 @@ void BallPlayerCollision(const rectangle& firstPlayer, ball& Ball)
 	{
 		if (Ball.Position.x > firstPlayer.Position.x + (firstPlayer.Size.x / 3) && Ball.Position.x < firstPlayer.Position.x + (firstPlayer.Size.x * (2.0f / 3.0f)))
 		{
-			Ball.Position.y = firstPlayer.Position.y + Ball.Size.y;
+			Ball.Position.y = firstPlayer.Position.y - Ball.Size.y;
 			Ball.speed.y *= -1;
 			Ball.speed.x = 0;
 		}
 		else if (Ball.Position.x < firstPlayer.Position.x + firstPlayer.Size.x / 3)
 		{
-			Ball.Position.y = firstPlayer.Position.y + Ball.Size.y;
+			Ball.Position.y = firstPlayer.Position.y - Ball.Size.x;
 			Ball.speed.y *= -1;
 			Ball.speed.x = -525;
 
 		}
 		else if (Ball.Position.x > firstPlayer.Position.x + firstPlayer.Size.x * (2.0f / 3.0f))
 		{
-			Ball.Position.y = firstPlayer.Position.y + Ball.Size.y;
+			Ball.Position.y = firstPlayer.Position.y - Ball.Size.x;
 			Ball.speed.y *= -1;
 			Ball.speed.x = 525;
 		}
@@ -298,7 +298,22 @@ void BallPlayerCollision(const rectangle& firstPlayer, ball& Ball)
 
 bool isScoring(rectangle& firstPlayer, ball Ball)
 {
-
+	if (Ball.Position.y >= ScreenHeight)
+	{
+		Ball.Position.x = ScreenWidth / 2;
+		Ball.Position.y = ScreenHeight / 2;
+	}
 
 	return false;
+}
+
+void rulesDraw()
+{
+	if (slGetKey(SL_KEY_BACKSPACE))
+	{
+		scene = Scenes::Menu;
+		return;
+	}
+
+
 }

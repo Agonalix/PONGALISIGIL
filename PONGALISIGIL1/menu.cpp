@@ -8,8 +8,8 @@ void MenuLoop(Scenes& scene, int font)
 	Button singlePlayer;
 	Button Rules;
 
-	color currentColorSingle = BLACK;
-	color currentColorMulti = BLACK;
+	color currentColorSingle = WHITE;
+	color currentColorMulti = WHITE;
 
 	if (slGetKey(SL_KEY_ESCAPE))
 	{
@@ -34,20 +34,19 @@ void MenuDraw(Button& singlePlayer, Button& rules, color currentColorSingle, col
 	slSetForeColor(WHITE.r, WHITE.g, WHITE.b, WHITE.a);
 
 	slSetFont(font, fontSizeMENU);
-	slText(30, ScreenHeight - 130, "MENU");
-	//slRectangleFill(25, 135, 350, 5);
+	slText(30, ScreenHeight - 130, "UpSide-Out");
 
 	slSetForeColor(BLACK.r, BLACK.g, BLACK.b, BLACK.a);
-	//slRectangleFill(singlePlayer.position.x, singlePlayer.position.y, singlePlayer.width, singlePlayer.height);
+	slRectangleFill(singlePlayer.position.x, singlePlayer.position.y, singlePlayer.width, singlePlayer.height);
 
-	slSetForeColor(WHITE.r, WHITE.g, WHITE.b, WHITE.a);
+	slSetForeColor(currentColorSingle.r, currentColorSingle.g, currentColorSingle.b, currentColorSingle.a);
 	slSetFont(font, fontSizeMODE);
 	slText(singlePlayer.position.x, singlePlayer.position.y, "Single-Player");
 
 	slSetForeColor(BLACK.r, BLACK.g, BLACK.b, BLACK.a);
-	//slRectangleFill(rules.position.x, rules.position.y, rules.width, rules.height);
+	slRectangleFill(rules.position.x, rules.position.y, rules.width, rules.height);
 
-	slSetForeColor(WHITE.r, WHITE.g, WHITE.b, WHITE.a);
+	slSetForeColor(currentColorMulti.r, currentColorMulti.g, currentColorMulti.b, currentColorMulti.a);
 	slSetFont(font, fontSizeMODE);
 	slText(rules.position.x, rules.position.y, "Rules");
 
@@ -56,11 +55,11 @@ void MenuDraw(Button& singlePlayer, Button& rules, color currentColorSingle, col
 	//Creditos
 	slSetForeColor(WHITE.r, WHITE.g, WHITE.b, WHITE.a);
 	slSetFont(font, fontSizeCredits);
-	slText(ScreenWidth - slGetTextWidth("Made by: Santiago Seara"), ScreenHeight - fontSizeCredits * 3.0, "Made by: Santiago Seara");
+	slText(ScreenWidth - slGetTextWidth("Made by: Santiago Seara") - 10, 0 + fontSizeCredits * 3.0, "Made by Santiago Seara");
 
 	slSetForeColor(WHITE.r, WHITE.g, WHITE.b, WHITE.a);
 	slSetFont(font, fontSizeCredits);
-	slText(ScreenWidth - slGetTextWidth("Institution: Image Campus"), ScreenHeight - fontSizeCredits, "Institution: Image Campus");
+	slText(ScreenWidth - slGetTextWidth("Institution: Image Campus") - 10, 0 + fontSizeCredits, "Institution Image Campus");
 
 }
 void ContrastColorWhenColliding(Vector2& mousePosition, Button& singlePlayer, Button& multiPlayer, color currentColorSingle, color currentColorMulti)
@@ -108,19 +107,13 @@ bool MouseRecCollision(Vector2& position, Button& button)
 }
 void InitializeMenu(Button& singlePlayer, Button& multiPlayer)
 {
-	singlePlayer.width = 100;
+	singlePlayer.width = 575;
 	singlePlayer.height = 80;
 	singlePlayer.color = BLACK;
 	singlePlayer.position = { 35, ScreenHeight - 400 };
 
-	multiPlayer.width = 550;
+	multiPlayer.width = 225;
 	multiPlayer.height = 90;
 	multiPlayer.color = BLACK;
 	multiPlayer.position = { 35, ScreenHeight - 550 };
-}
-void rulesDraw()
-{
-
-
-
 }
