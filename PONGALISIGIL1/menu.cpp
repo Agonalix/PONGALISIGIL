@@ -2,15 +2,12 @@
 
 using namespace colors;
 
-void MenuLoop(Scenes& scene, int ScreenHeight, int ScreenWidth)
+void MenuLoop(Scenes& scene, int font)
 {
-	Vector2 mousePosition = { slGetMouseX(), slGetMouseY()};
+	Vector2 mousePosition = { slGetMouseX(), slGetMouseY() };
 	Button singlePlayer;
 	Button Rules;
 
-	int fontSizeMENU = 120;
-	int fontSizeMODE = 90;
-	int fontSizeCredits = 30;
 	color currentColorSingle = BLACK;
 	color currentColorMulti = BLACK;
 
@@ -22,44 +19,48 @@ void MenuLoop(Scenes& scene, int ScreenHeight, int ScreenWidth)
 	ButtonPressed(scene, mousePosition, singlePlayer, Rules);
 	ContrastColorWhenColliding(mousePosition, singlePlayer, Rules, currentColorSingle, currentColorMulti);
 
-	MenuDraw(fontSizeMENU, singlePlayer, fontSizeMODE, Rules, fontSizeCredits, ScreenHeight, ScreenWidth, currentColorSingle, currentColorMulti);
+	MenuDraw(singlePlayer, Rules, currentColorSingle, currentColorMulti, font);
 }
-void MenuDraw(int fontSizeMENU, Button& singlePlayer, int fontSizeMODE, Button& rules,  int fontSizeCredits, int ScreenHeight, int ScreenWidth, color currentColorSingle, color currentColorMulti)
+void MenuDraw(Button& singlePlayer, Button& rules, color currentColorSingle, color currentColorMulti, int font)
 {
+
 	//----------------------------------------------------------------------------------------------
 	//Menu
-
+	int fontSizeMENU = 150;
+	int fontSizeMODE = 90;
+	int fontSizeCredits = 30;
 	slSetBackColor(BLACK.r, BLACK.g, BLACK.b);
 
-	// large text and fat line
 	slSetForeColor(WHITE.r, WHITE.g, WHITE.b, WHITE.a);
-	slSetFontSize(fontSizeMENU);
-	slText(30, 25, "MENU");
-	slRectangleFill(25, 135, 350, 5);
 
-	// smaller subtext
-	slSetFontSize(fontSizeMODE);
+	slSetFont(font, fontSizeMENU);
+	slText(30, ScreenHeight - 130, "MENU");
+	//slRectangleFill(25, 135, 350, 5);
+
+	slSetForeColor(BLACK.r, BLACK.g, BLACK.b, BLACK.a);
+	//slRectangleFill(singlePlayer.position.x, singlePlayer.position.y, singlePlayer.width, singlePlayer.height);
+
+	slSetForeColor(WHITE.r, WHITE.g, WHITE.b, WHITE.a);
+	slSetFont(font, fontSizeMODE);
 	slText(singlePlayer.position.x, singlePlayer.position.y, "Single-Player");
 
 	slSetForeColor(BLACK.r, BLACK.g, BLACK.b, BLACK.a);
-	slRectangleFill(singlePlayer.position.x, singlePlayer.position.y, singlePlayer.width, singlePlayer.height);
+	//slRectangleFill(rules.position.x, rules.position.y, rules.width, rules.height);
 
 	slSetForeColor(WHITE.r, WHITE.g, WHITE.b, WHITE.a);
-	slSetFontSize(fontSizeMODE);
+	slSetFont(font, fontSizeMODE);
 	slText(rules.position.x, rules.position.y, "Rules");
 
-	slSetForeColor(BLACK.r, BLACK.g, BLACK.b, BLACK.a);
-	slRectangleFill(singlePlayer.position.x, singlePlayer.position.y, singlePlayer.width, singlePlayer.height);
 
 	//----------------------------------------------------------------------------------------------
 	//Creditos
 	slSetForeColor(WHITE.r, WHITE.g, WHITE.b, WHITE.a);
-	slSetFontSize(fontSizeCredits);
-	slText(ScreenWidth - slGetTextWidth("Made by: Santiago Seara"), ScreenHeight - fontSizeCredits* 2.0, "Made by: Santiago Seara");
+	slSetFont(font, fontSizeCredits);
+	slText(ScreenWidth - slGetTextWidth("Made by: Santiago Seara"), ScreenHeight - fontSizeCredits * 3.0, "Made by: Santiago Seara");
 
 	slSetForeColor(WHITE.r, WHITE.g, WHITE.b, WHITE.a);
-	slSetFontSize(fontSizeCredits);
-	slText(ScreenWidth - slGetTextWidth("Institution: Image Campus"), ScreenHeight - fontSizeCredits * 1.5, "Institution: Image Campus");
+	slSetFont(font, fontSizeCredits);
+	slText(ScreenWidth - slGetTextWidth("Institution: Image Campus"), ScreenHeight - fontSizeCredits, "Institution: Image Campus");
 
 }
 void ContrastColorWhenColliding(Vector2& mousePosition, Button& singlePlayer, Button& multiPlayer, color currentColorSingle, color currentColorMulti)
@@ -107,17 +108,19 @@ bool MouseRecCollision(Vector2& position, Button& button)
 }
 void InitializeMenu(Button& singlePlayer, Button& multiPlayer)
 {
-	singlePlayer.width = 625;
-	singlePlayer.height = 90;
+	singlePlayer.width = 100;
+	singlePlayer.height = 80;
 	singlePlayer.color = BLACK;
-	singlePlayer.position = { 35, 200 };
+	singlePlayer.position = { 35, ScreenHeight - 400 };
 
 	multiPlayer.width = 550;
 	multiPlayer.height = 90;
 	multiPlayer.color = BLACK;
-	multiPlayer.position = { 35, 325 };
+	multiPlayer.position = { 35, ScreenHeight - 550 };
 }
 void rulesDraw()
 {
+
+
 
 }

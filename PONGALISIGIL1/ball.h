@@ -9,4 +9,4 @@ struct ball
 };
 
 void BallMovement(ball& Ball);
-void BorderBallCollision(ball& Ball, int ScreenHeight, int ScreenWidth);
+void BorderBallCollision(ball& Ball);

@@ -10,7 +10,7 @@ using namespace colors;
 //-----------------------------------------------------------------------------------------------------------------------
 //Start Game
 void GameLoop();
-void GameOver(rectangle& firstPlayer, rectangle& secondPlayer, ball& Ball);
+void GameOver(rectangle& firstPlayer, ball& Ball);
 void singlePlayerMode(rectangle& firstPlayer, ball& Ball);
 void ReturnToStartingPosition(rectangle& firstPlayer, ball& Ball);
 void GameDraw(rectangle& firstPlayer, ball& Ball);
@@ -28,8 +28,6 @@ void RandomBallStart(ball& Ball);
 
 
 static Scenes scene = Scenes::Menu;
-int ScreenWidth = 900;
-int ScreenHeight = 500;
 
 void RunProgram()
 {
@@ -44,23 +42,22 @@ void GameLoop()
 
 
 	rectangle firstPlayer;
-	rectangle secondPlayer;
-	rectangle IAPlayer;
 	ball Ball;
 
+	slWindow(ScreenWidth, ScreenHeight, "Breakout", true);
+	int font = slLoadFont("../HuLi-Regular.ttf");
 	//Inicio random de la pelota
-	RandomBallStart(Ball);
-	InitializeGameSingle(firstPlayer, Ball);
+	/*RandomBallStart(Ball);
+	InitializeGameSingle(firstPlayer, Ball);*/
+	scene = Scenes::Menu;
 
-	slWindow(ScreenWidth, ScreenHeight, "Breakout", 20);
-
-	while (scene != Scenes::Exit && !slShouldClose())    // Detect window close button or ESC key
+	while (scene != Scenes::Exit && !slShouldClose() && !slGetKey(SL_KEY_ESCAPE))    // Detect window close button or ESC key
 	{
 		switch (scene)
 		{
 		case Scenes::Menu:
 			reset(firstPlayer, Ball);
-			MenuLoop(scene, ScreenHeight, ScreenWidth);
+			MenuLoop(scene, font);
 			break;
 
 		case Scenes::SinglePlayerGame:
@@ -72,8 +69,8 @@ void GameLoop()
 			break;
 
 		case Scenes::GameOver:
-			GameOver(firstPlayer, secondPlayer, Ball);
-			GameOver(firstPlayer, IAPlayer, Ball);
+			GameOver(firstPlayer, Ball);
+			GameOver(firstPlayer,Ball);
 			break;
 
 		case Scenes::Exit:
@@ -103,12 +100,12 @@ void singlePlayerMode(rectangle& firstPlayer, ball& Ball)
 
 		//First player
 		//----------------------------------------------------------------------------------
-		FirstPlayerMovement(firstPlayer, ScreenHeight);
+		FirstPlayerMovement(firstPlayer);
 
 		//Colisiones
 		//----------------------------------------------------------------------------------
 
-		BorderBallCollision(Ball, ScreenHeight, ScreenWidth);
+		BorderBallCollision(Ball);
 		BallPlayerCollision(firstPlayer, Ball);
 
 		ReturnToStartingPosition(firstPlayer, Ball);
@@ -125,8 +122,8 @@ void reset(rectangle& firstPlayer, ball& ball)
 {
 	//--------------------------------------------------------------------------------------
 	//FirstPlayer
-	firstPlayer.Position = { 20, 395 };
-	firstPlayer.Size = { 25, 185 };
+	firstPlayer.Position = { ScreenWidth / 2 + firstPlayer.Size.x / 2, 15 };
+	firstPlayer.Size = { 185, 25 };
 	firstPlayer.speed = 720;
 	firstPlayer.score = 0;
 
@@ -143,7 +140,7 @@ void InitializeGameSingle(rectangle& firstPlayer, ball& ball)
 	srand(time(NULL));
 	//--------------------------------------------------------------------------------------
 	//FirstPlayer
-	firstPlayer.Position = { ScreenWidth / 2 - firstPlayer.Size.x, 10 };
+	firstPlayer.Position = { ScreenWidth /2 + firstPlayer.Size.x /2, 15 };
 	firstPlayer.Size = { 185, 25 };
 	firstPlayer.speed = 720;
 	firstPlayer.score = 0;
@@ -225,7 +222,7 @@ bool isWinner(rectangle& firstPlayer)
 	return false;
 }
 
-void GameOver(rectangle& firstPlayer, rectangle& secondPlayer, ball& Ball)
+void GameOver(rectangle& firstPlayer, ball& Ball)
 {
 
 	int fontSize = 100;
@@ -279,21 +276,21 @@ void BallPlayerCollision(const rectangle& firstPlayer, ball& Ball)
 		if (Ball.Position.x > firstPlayer.Position.x + (firstPlayer.Size.x / 3) && Ball.Position.x < firstPlayer.Position.x + (firstPlayer.Size.x * (2.0f / 3.0f)))
 		{
 			Ball.Position.y = firstPlayer.Position.y + Ball.Size.y;
-			Ball.speed.x *= -1;
-			Ball.speed.y = 0;
+			Ball.speed.y *= -1;
+			Ball.speed.x = 0;
 		}
 		else if (Ball.Position.x < firstPlayer.Position.x + firstPlayer.Size.x / 3)
 		{
-			Ball.Position.x = firstPlayer.Position.x + Ball.Size.x;
-			Ball.speed.x *= -1;
-			Ball.speed.y = -525;
+			Ball.Position.y = firstPlayer.Position.y + Ball.Size.y;
+			Ball.speed.y *= -1;
+			Ball.speed.x = -525;
 
 		}
 		else if (Ball.Position.x > firstPlayer.Position.x + firstPlayer.Size.x * (2.0f / 3.0f))
 		{
-			Ball.Position.x = firstPlayer.Position.x + Ball.Size.x;
-			Ball.speed.x *= -1;
-			Ball.speed.y = 525;
+			Ball.Position.y = firstPlayer.Position.y + Ball.Size.y;
+			Ball.speed.y *= -1;
+			Ball.speed.x = 525;
 		}
 
 	}

@@ -1,12 +1,14 @@
 #include "ball.h"
 #include "Vector2.h"
 #include "include/sl.h"
+#include "ScreenSize.h"
+
 void BallMovement(ball& Ball)
 {
 	Ball.Position.y += Ball.speed.y * slGetDeltaTime();
 	Ball.Position.x += Ball.speed.x * slGetDeltaTime();
 }
-void BorderBallCollision(ball& Ball, int ScreenHeight, int ScreenWidth)
+void BorderBallCollision(ball& Ball)
 {
 	if (Ball.Position.y >= (ScreenHeight - Ball.Size.y))
 	{

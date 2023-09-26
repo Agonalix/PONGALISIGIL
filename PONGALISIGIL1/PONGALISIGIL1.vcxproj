@@ -149,6 +149,7 @@ copy/y "$(SolutionDir)lib\wrap_oal.dll" "$(OutDir)"</Command>
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="menu.cpp" />
     <ClCompile Include="rectangle.cpp" />
+    <ClCompile Include="ScreenSize.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ball.h" />
@@ -158,6 +159,7 @@ copy/y "$(SolutionDir)lib\wrap_oal.dll" "$(OutDir)"</Command>
     <ClInclude Include="menu.h" />
     <ClInclude Include="rectangle.h" />
     <ClInclude Include="scenes.h" />
+    <ClInclude Include="ScreenSize.h" />
     <ClInclude Include="Vector2.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

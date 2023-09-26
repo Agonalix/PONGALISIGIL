@@ -10,4 +10,4 @@ struct rectangle
     int speed;
     int score;
 };
-void FirstPlayerMovement(rectangle& firstPlayer, int ScreenHeight);
+void FirstPlayerMovement(rectangle& firstPlayer);
