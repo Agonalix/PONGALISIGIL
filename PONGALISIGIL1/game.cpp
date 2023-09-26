@@ -265,7 +265,7 @@ void ReturnToStartingPosition(rectangle& firstPlayer, ball& Ball)
 
 bool Collision(rectangle Player, ball Ball)
 {
-	if (Player.Position.x + Player.Size.x / 2  >= Ball.Position.x - Ball.Size.x / 2 &&
+	if (Player.Position.x + Player.Size.x / 2 >= Ball.Position.x - Ball.Size.x / 2 &&
 		Player.Position.x - Player.Size.x / 2 <= Ball.Position.x + Ball.Size.x / 2 &&
 		Player.Position.y + Player.Size.y / 2 >= Ball.Position.y - Ball.Size.x / 2 &&
 		Player.Position.y - Player.Size.y / 2 <= Ball.Position.y + Ball.Size.y / 2) {
@@ -350,16 +350,16 @@ void rulesDraw(int font, int fontSpecial)
 
 void brickDraw()
 {
-	const int brickWidth = 140;
-	const int brickHeight = 40;
-	const int brickSpacing = 20;  // Espacio entre ladrillos
-	const int numRows = 5;       // Cantidad de filas de ladrillos
-	const int numCols = 10;      // Cantidad de columnas de ladrillos
+	const int brickWidth = 120;
+	const int brickHeight = 35;
+	const int brickSpacing = 30;  // Espacio entre ladrillos
+	const int numRows = 10;       // Cantidad de filas de ladrillos
+	const int numCols = 12;      // Cantidad de columnas de ladrillos
 
 	color rowColors[] = { RED, GREEN, BLUE, YELLOW, ORANGE }; // Colores para cada fila de ladrillos
 
 	int totalWidth = numCols * (brickWidth + brickSpacing);
-	int startX = (ScreenWidth - totalWidth) / 2;
+	int startX = (ScreenWidth - totalWidth + brickWidth) / 2;
 
 	for (int row = 0; row < numRows; row++)
 	{
