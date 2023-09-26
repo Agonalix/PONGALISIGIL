@@ -11,4 +11,4 @@ void ContrastColorWhenColliding(Vector2& mousePosition, Button& singlePlayer, Bu
 void InitializeMenu(Button& singlePlayer, Button& multiPlayer);
 void ButtonPressed(Scenes& scene, Vector2& mousePosition, Button& singlePlayer, Button& multiPlayer);
 bool MouseRecCollision(Vector2& position, Button& button);
-void rulesDraw();
+void rulesDraw(int font, int fontSpecial);

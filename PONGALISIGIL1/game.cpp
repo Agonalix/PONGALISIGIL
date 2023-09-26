@@ -10,15 +10,16 @@ using namespace colors;
 //-----------------------------------------------------------------------------------------------------------------------
 //Start Game
 void GameLoop();
-void GameOver(rectangle& firstPlayer, ball& Ball);
+void GameOver(rectangle& firstPlayer, ball& Ball, int font);
 void singlePlayerMode(rectangle& firstPlayer, ball& Ball);
 void ReturnToStartingPosition(rectangle& firstPlayer, ball& Ball);
 void GameDraw(rectangle& firstPlayer, ball& Ball);
 bool isWinner(rectangle& firstPlayer);
 void InitializeGameSingle(rectangle& firstPlayer, ball& ball); // inicializacion de las variables
 void reset(rectangle& firstPlayer, ball& ball);
-bool isScoring(rectangle& firstPlayer, ball Ball);
-
+bool lostLives(rectangle& firstPlayer, ball Ball);
+void brickInit(rectangle& brick, int startX, int col, const int& brickWidth, const int& brickSpacing, int row, const int& brickHeight);
+void brickDraw();
 
 //-----------------------------------------------------------------------------------------------------------------------
 //Game Mechanics
@@ -46,6 +47,8 @@ void GameLoop()
 
 	slWindow(ScreenWidth, ScreenHeight, "Breakout", true);
 	int font = slLoadFont("../HuLi-Regular.ttf");
+	int fontRules = slLoadFont("../Mouly.ttf");
+	int fontArrows = slLoadFont("../Citylist.ttf");
 	//Inicio random de la pelota
 	RandomBallStart(Ball);
 	InitializeGameSingle(firstPlayer, Ball);
@@ -65,12 +68,12 @@ void GameLoop()
 			break;
 
 		case Scenes::Rules:
-			rulesDraw();
+			rulesDraw(fontRules, fontArrows);
 			break;
 
 		case Scenes::GameOver:
-			GameOver(firstPlayer, Ball);
-			GameOver(firstPlayer, Ball);
+			GameOver(firstPlayer, Ball, font);
+			GameOver(firstPlayer, Ball, font);
 			break;
 
 		case Scenes::Exit:
@@ -91,6 +94,7 @@ void singlePlayerMode(rectangle& firstPlayer, ball& Ball)
 		scene = Scenes::Menu;
 		return;
 	}
+
 
 	if (isWinner(firstPlayer) != true)
 	{
@@ -181,6 +185,9 @@ void GameDraw(rectangle& firstPlayer, ball& Ball)
 	//----------------------------------------------------------------------------------
 	slRectangleFill(Ball.Position.x, Ball.Position.y, Ball.Size.x, Ball.Size.y); // Player one Drawing
 	//----------------------------------------------------------------------------------
+
+	//Bricks;
+	brickDraw();
 }
 
 void RandomBallStart(ball& Ball)
@@ -222,7 +229,7 @@ bool isWinner(rectangle& firstPlayer)
 	return false;
 }
 
-void GameOver(rectangle& firstPlayer, ball& Ball)
+void GameOver(rectangle& firstPlayer, ball& Ball, int font)
 {
 
 	int fontSize = 100;
@@ -238,16 +245,16 @@ void GameOver(rectangle& firstPlayer, ball& Ball)
 	if (firstPlayer.score == 10)
 	{
 		slSetForeColor(WHITE.r, WHITE.g, WHITE.b, WHITE.a);
-		slSetFontSize(fontSize);
+		slSetFont(font, fontSize);
 		slText(ScreenWidth / 2 - slGetTextWidth("PLAYER ONE WINS") / 2, ScreenHeight / 2 - fontSize, "PLAYER ONE WINS");
-		slSetFontSize(fontSizeContinue);
+		slSetFont(font, fontSizeContinue);
 		slText(ScreenWidth - slGetTextWidth("Press SPACE to continue..."), ScreenHeight - 55, "Press SPACE to continue...");
 	}
 }
 
 void ReturnToStartingPosition(rectangle& firstPlayer, ball& Ball)
 {
-	if (isScoring(firstPlayer, Ball)) // Si suma un punto alguno de los jugadores, la pelota vuelve al (0;0)
+	if (lostLives(firstPlayer, Ball)) // Si suma un punto alguno de los jugadores, la pelota vuelve al (0;0)
 	{
 		Ball.Position.x = ScreenWidth / 2.0f;
 		Ball.Position.y = ScreenHeight / 2.0f;
@@ -295,7 +302,7 @@ void BallPlayerCollision(const rectangle& firstPlayer, ball& Ball)
 	}
 }
 
-bool isScoring(rectangle& firstPlayer, ball Ball)
+bool lostLives(rectangle& firstPlayer, ball Ball)
 {
 	if (Ball.Position.y >= ScreenHeight)
 	{
@@ -305,13 +312,73 @@ bool isScoring(rectangle& firstPlayer, ball Ball)
 	return false;
 }
 
-void rulesDraw()
+void rulesDraw(int font, int fontSpecial)
 {
 	if (slGetKey(SL_KEY_BACKSPACE))
 	{
 		scene = Scenes::Menu;
 		return;
 	}
+	int fontSizeMENU = 150;
+	int fontSizeTEXT = 45;
+	int textPositionX = 35;
+	int textPositiony = ScreenHeight - 285;
+
+	slSetForeColor(BLACK.r, BLACK.g, BLACK.b, BLACK.a);
+
+	slSetForeColor(WHITE.r, WHITE.g, WHITE.b, WHITE.a);
+	slSetFont(font, fontSizeMENU);
+	slText(30, ScreenHeight - 130, "Rules");
+
+	slSetFont(font, fontSizeTEXT);
+	slText(textPositionX, textPositiony, "This is a breakout game, the rules are the same.");
+	slText(textPositionX, textPositiony - 55, "You are the paddle and must destroy all the rectangles. But mine has a twist... literally.");
 
 
+	slSetFont(font, fontSizeMENU - 30);
+	slText(30, textPositiony - 200, "Movement: ");
+	slSetFont(fontSpecial, fontSizeMENU - 50);
+	slText(textPositionX + 30, textPositiony - 345, "<        >");
+
+	slSetFont(font, fontSizeMENU - 30);
+	slText(30, textPositiony - 470, "Exit Buttons: ");
+
+	slSetFont(font, fontSizeMENU - 75);
+	slText(textPositionX, textPositiony - 625, "ESC: EXIT PROGRAM");
+	slText(textPositionX, textPositiony - 725, "BACKSPACE: MENU");
+}
+
+void brickDraw()
+{
+	const int brickWidth = 140;
+	const int brickHeight = 40;
+	const int brickSpacing = 20;  // Espacio entre ladrillos
+	const int numRows = 5;       // Cantidad de filas de ladrillos
+	const int numCols = 10;      // Cantidad de columnas de ladrillos
+
+	color rowColors[] = { RED, GREEN, BLUE, YELLOW, ORANGE }; // Colores para cada fila de ladrillos
+
+	int totalWidth = numCols * (brickWidth + brickSpacing);
+	int startX = (ScreenWidth - totalWidth) / 2;
+
+	for (int row = 0; row < numRows; row++)
+	{
+		for (int col = 0; col < numCols; col++)
+		{
+			rectangle brick;
+			brickInit(brick, startX, col, brickWidth, brickSpacing, row, brickHeight);
+
+
+			slSetForeColor(rowColors[row].r, rowColors[row].g, rowColors[row].b, rowColors[row].a);
+			slRectangleFill(brick.Position.x, brick.Position.y, brick.Size.x, brick.Size.y);
+		}
+	}
+}
+
+void brickInit(rectangle& brick, int startX, int col, const int& brickWidth, const int& brickSpacing, int row, const int& brickHeight)
+{
+	brick.Position.x = startX + col * (brickWidth + brickSpacing);
+	brick.Position.y = 100 + row * (brickHeight + brickSpacing);
+	brick.Size.x = brickWidth;
+	brick.Size.y = brickHeight;
 }
