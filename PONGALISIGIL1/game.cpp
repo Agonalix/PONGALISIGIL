@@ -19,7 +19,7 @@ void InitializeGameSingle(rectangle& firstPlayer, ball& ball); // inicializacion
 void reset(rectangle& firstPlayer, ball& ball);
 bool lostLives(rectangle& firstPlayer, ball Ball);
 void brickInit(rectangle& brick, int startX, int col, const int& brickWidth, const int& brickSpacing, int row, const int& brickHeight);
-void brickDraw(ball& Ball);
+void brickDraw(ball& Ball, rectangle& firstPlayer);
 void bricksArray();
 
 
@@ -76,7 +76,6 @@ void GameLoop()
 
 		case Scenes::GameOver:
 			GameOver(firstPlayer, Ball, font);
-			GameOver(firstPlayer, Ball, font);
 			break;
 
 		case Scenes::Exit:
@@ -119,7 +118,7 @@ void singlePlayerMode(rectangle& firstPlayer, ball& Ball)
 
 		GameDraw(firstPlayer, Ball);
 
-		brickDraw(Ball);
+		brickDraw(Ball, firstPlayer);
 	}
 	else
 	{
@@ -225,14 +224,6 @@ void RandomBallStart(ball& Ball)
 	}
 }
 
-bool isWinner(rectangle& firstPlayer)
-{
-	if (firstPlayer.bricksBroken == 10)
-	{
-		return true;
-	}
-	return false;
-}
 
 void GameOver(rectangle& firstPlayer, ball& Ball, int font)
 {
@@ -359,7 +350,15 @@ const int numRows = 5;       // Cantidad de filas de ladrillos
 const int numCols = 12;      // Cantidad de columnas de ladrillos
 bool bricks[numRows][numCols];
 
-void brickDraw(ball& Ball)
+bool isWinner(rectangle& firstPlayer)
+{
+	if (firstPlayer.bricksBroken == numRows * numCols)
+	{
+		return true;
+	}
+	return false;
+}
+void brickDraw(ball& Ball, rectangle& firstPlayer)
 {
 	const int brickWidth = 120;
 	const int brickHeight = 35;
@@ -383,7 +382,7 @@ void brickDraw(ball& Ball)
 				{
 					Ball.speed.y *= -1;
 					bricks[row][col] = false; // Marcar el ladrillo como roto
-					std::cout << "locura" << std::endl;
+					firstPlayer.bricksBroken++;
 					break;
 				}
 
