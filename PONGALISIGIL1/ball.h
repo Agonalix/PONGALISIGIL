@@ -8,5 +8,5 @@ struct ball
 	Vector2 speed;
 };
 
-void BallMovement(ball& Ball);
-void BorderBallCollision(ball& Ball);
+void ballMovement(ball& Ball);
+void borderBallCollision(ball& Ball);

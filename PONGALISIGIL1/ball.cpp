@@ -3,12 +3,12 @@
 #include "include/sl.h"
 #include "ScreenSize.h"
 
-void BallMovement(ball& Ball)
+void ballMovement(ball& Ball)
 {
 	Ball.Position.y += Ball.speed.y * slGetDeltaTime();
 	Ball.Position.x += Ball.speed.x * slGetDeltaTime();
 }
-void BorderBallCollision(ball& Ball)
+void borderBallCollision(ball& Ball)
 {
 	if (Ball.Position.y <= 0)
 	{
@@ -20,9 +20,9 @@ void BorderBallCollision(ball& Ball)
 		Ball.Position.x = 0;
 		Ball.speed.x *= -1;
 	}
-	else if (Ball.Position.x >= ScreenWidth)
+	else if (Ball.Position.x >= screenWidth)
 	{
-		Ball.Position.x = ScreenWidth;
+		Ball.Position.x = screenWidth;
 		Ball.speed.x *= -1;
 	}
 }

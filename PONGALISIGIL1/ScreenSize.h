@@ -1,4 +1,4 @@
 #pragma once
 
-extern int ScreenWidth;
-extern int ScreenHeight;
+extern int screenWidth;
+extern int screenHeight;

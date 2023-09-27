@@ -2,7 +2,7 @@
 
 using namespace colors;
 
-void MenuLoop(Scenes& scene, int font)
+void menuLoop(Scenes& scene, int font)
 {
 	Vector2 mousePosition = { slGetMouseX(), slGetMouseY() };
 	Button singlePlayer;
@@ -15,13 +15,13 @@ void MenuLoop(Scenes& scene, int font)
 	{
 		scene = Scenes::Exit;
 	}
-	InitializeMenu(singlePlayer, Rules);
-	ButtonPressed(scene, mousePosition, singlePlayer, Rules);
-	ContrastColorWhenColliding(mousePosition, singlePlayer, Rules, currentColorSingle, currentColorMulti);
+	initializeMenu(singlePlayer, Rules);
+	buttonPressed(scene, mousePosition, singlePlayer, Rules);
+	contrastColorWhenColliding(mousePosition, singlePlayer, Rules, currentColorSingle, currentColorMulti);
 
-	MenuDraw(singlePlayer, Rules, currentColorSingle, currentColorMulti, font);
+	menuDraw(singlePlayer, Rules, currentColorSingle, currentColorMulti, font);
 }
-void MenuDraw(Button& singlePlayer, Button& rules, color currentColorSingle, color currentColorMulti, int font)
+void menuDraw(Button& singlePlayer, Button& rules, color currentColorSingle, color currentColorMulti, int font)
 {
 
 	//----------------------------------------------------------------------------------------------
@@ -34,7 +34,7 @@ void MenuDraw(Button& singlePlayer, Button& rules, color currentColorSingle, col
 	slSetForeColor(WHITE.r, WHITE.g, WHITE.b, WHITE.a);
 
 	slSetFont(font, fontSizeMENU);
-	slText(30, ScreenHeight - 130, "UpSide-Out");
+	slText(30, screenHeight - 130, "UpSide-Out");
 
 	slSetForeColor(BLACK.r, BLACK.g, BLACK.b, BLACK.a);
 	slRectangleFill(singlePlayer.position.x, singlePlayer.position.y, singlePlayer.width, singlePlayer.height);
@@ -55,16 +55,16 @@ void MenuDraw(Button& singlePlayer, Button& rules, color currentColorSingle, col
 	//Creditos
 	slSetForeColor(WHITE.r, WHITE.g, WHITE.b, WHITE.a);
 	slSetFont(font, fontSizeCredits);
-	slText(ScreenWidth - slGetTextWidth("Made by: Santiago Seara") - 10, 0 + fontSizeCredits * 3.0, "Made by Santiago Seara");
+	slText(screenWidth - slGetTextWidth("Made by: Santiago Seara") - 10, 0 + fontSizeCredits * 3.0, "Made by Santiago Seara");
 
 	slSetForeColor(WHITE.r, WHITE.g, WHITE.b, WHITE.a);
 	slSetFont(font, fontSizeCredits);
-	slText(ScreenWidth - slGetTextWidth("Institution: Image Campus") - 10, 0 + fontSizeCredits, "Institution Image Campus");
+	slText(screenWidth - slGetTextWidth("Institution: Image Campus") - 10, 0 + fontSizeCredits, "Institution Image Campus");
 
 }
-void ContrastColorWhenColliding(Vector2& mousePosition, Button& singlePlayer, Button& multiPlayer, color currentColorSingle, color currentColorMulti)
+void contrastColorWhenColliding(Vector2& mousePosition, Button& singlePlayer, Button& multiPlayer, color currentColorSingle, color currentColorMulti)
 {
-	if (MouseRecCollision(mousePosition, singlePlayer) == true)
+	if (mouseRecCollision(mousePosition, singlePlayer) == true)
 	{
 		currentColorSingle = GRAY;
 	}
@@ -72,7 +72,7 @@ void ContrastColorWhenColliding(Vector2& mousePosition, Button& singlePlayer, Bu
 	{
 		currentColorSingle = WHITE;
 	}
-	if (MouseRecCollision(mousePosition, multiPlayer) == true)
+	if (mouseRecCollision(mousePosition, multiPlayer) == true)
 	{
 		currentColorMulti = GRAY;
 	}
@@ -81,18 +81,18 @@ void ContrastColorWhenColliding(Vector2& mousePosition, Button& singlePlayer, Bu
 		currentColorMulti = WHITE;
 	}
 }
-void ButtonPressed(Scenes& scene, Vector2& mousePosition, Button& singlePlayer, Button& multiPlayer)
+void buttonPressed(Scenes& scene, Vector2& mousePosition, Button& singlePlayer, Button& multiPlayer)
 {
-	if (MouseRecCollision(mousePosition, singlePlayer) == true && slGetMouseButton(SL_MOUSE_BUTTON_LEFT))
+	if (mouseRecCollision(mousePosition, singlePlayer) == true && slGetMouseButton(SL_MOUSE_BUTTON_LEFT))
 	{
 		scene = Scenes::SinglePlayerGame;
 	}
-	else if (MouseRecCollision(mousePosition, multiPlayer) == true && slGetMouseButton(SL_MOUSE_BUTTON_LEFT))
+	else if (mouseRecCollision(mousePosition, multiPlayer) == true && slGetMouseButton(SL_MOUSE_BUTTON_LEFT))
 	{
 		scene = Scenes::Rules;
 	}
 }
-bool MouseRecCollision(Vector2& position, Button& button)
+bool mouseRecCollision(Vector2& position, Button& button)
 {
 	// Collision check for point to rectangle
 	if (position.x >= button.position.x &&
@@ -105,15 +105,15 @@ bool MouseRecCollision(Vector2& position, Button& button)
 
 	return false;
 }
-void InitializeMenu(Button& singlePlayer, Button& multiPlayer)
+void initializeMenu(Button& singlePlayer, Button& multiPlayer)
 {
 	singlePlayer.width = 575;
 	singlePlayer.height = 80;
 	singlePlayer.color = BLACK;
-	singlePlayer.position = { 35, ScreenHeight - 400 };
+	singlePlayer.position = { 35, screenHeight - 400 };
 
 	multiPlayer.width = 225;
 	multiPlayer.height = 90;
 	multiPlayer.color = BLACK;
-	multiPlayer.position = { 35, ScreenHeight - 550 };
+	multiPlayer.position = { 35, screenHeight - 550 };
 }

@@ -1,4 +1,4 @@
 #include "ScreenSize.h"
 
-extern int ScreenWidth = 1920;
-extern int ScreenHeight = 1080;
+extern int screenWidth = 1920;
+extern int screenHeight = 1080;

@@ -11,4 +11,4 @@ struct rectangle
     int bricksBroken;
     int lives;
 };
-void FirstPlayerMovement(rectangle& firstPlayer);
+void firstPlayerMovement(rectangle& firstPlayer);
