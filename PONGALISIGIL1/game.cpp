@@ -22,7 +22,9 @@ void reset(rectangle& firstPlayer, ball& ball);
 bool lostLives(rectangle& firstPlayer, ball Ball);
 void brickInit(rectangle& brick, int startX, int col, const int& brickWidth, const int& brickSpacing, int row, const int& brickHeight);
 void brickDraw(ball& Ball, rectangle& firstPlayer);
-void bricksArray();
+void bricksStarted();
+void pauseDraw(int font, int fontSpecial);
+
 
 
 //-----------------------------------------------------------------------------------------------------------------------
@@ -33,6 +35,7 @@ void randomBallStart(ball& Ball);
 
 
 static Scenes scene = Scenes::Menu;
+float timer = 0;
 
 void runProgram()
 {
@@ -56,14 +59,15 @@ void gameLoop()
 	//Inicio random de la pelota
 	randomBallStart(Ball);
 	initializeGameSingle(firstPlayer, Ball);
+	bricksStarted();
 
-	bricksArray();
 
 	while (scene != Scenes::Exit && !slShouldClose() && !slGetKey(SL_KEY_ESCAPE))    // Detect window close button or ESC key
 	{
 		switch (scene)
 		{
 		case Scenes::Menu:
+			bricksStarted();
 			reset(firstPlayer, Ball);
 			menuLoop(scene, font);
 			break;
@@ -74,6 +78,10 @@ void gameLoop()
 
 		case Scenes::Rules:
 			rulesDraw(fontRules, fontArrows);
+			break;
+
+		case Scenes::Pause:
+			pauseDraw(fontRules, fontArrows);
 			break;
 
 		case Scenes::GameOver:
@@ -93,11 +101,13 @@ void singlePlayerMode(rectangle& firstPlayer, ball& Ball)
 	// Update
 	//----------------------------------------------------------------------------------
 	//----------------------------------------------------------------------------------
-	if (slGetKey(SL_KEY_BACKSPACE))
+	if (slGetKey(SL_KEY_ENTER))
 	{
-		scene = Scenes::Menu;
+		scene = Scenes::Pause;
 		return;
 	}
+
+	timer = 0;
 
 
 	if (isWinner(firstPlayer) != true)
@@ -151,7 +161,7 @@ void initializeGameSingle(rectangle& firstPlayer, ball& ball)
 	srand(time(NULL));
 	//--------------------------------------------------------------------------------------
 	//FirstPlayer
-	firstPlayer.Position = { screenWidth / 2 + firstPlayer.Size.x / 2, screenHeight - 15 };
+	firstPlayer.Position = { screenWidth / 2 + firstPlayer.Size.x / 2, screenHeight - 30 };
 	firstPlayer.Size = { 185, 25 };
 	firstPlayer.speed = 720;
 	firstPlayer.bricksBroken = 0;
@@ -303,7 +313,7 @@ void rulesDraw(int font, int fontSpecial)
 		scene = Scenes::Menu;
 		return;
 	}
-	int fontSizeMENU = 150;
+	int fontSizeMENU = 135;
 	int fontSizeTEXT = 45;
 	int textPositionX = 35;
 	int textPositiony = screenHeight - 285;
@@ -315,21 +325,60 @@ void rulesDraw(int font, int fontSpecial)
 	slText(30, screenHeight - 130, "Rules");
 
 	slSetFont(font, fontSizeTEXT);
-	slText(textPositionX, textPositiony, "This is a breakout game, the rules are the same.");
-	slText(textPositionX, textPositiony - 55, "You are the paddle and must destroy all the rectangles. But mine has a twist... literally.");
-
+	slText(textPositionX, textPositiony + 20, "This is a breakout game, the rules are the same.");
+	slText(textPositionX, textPositiony - 35, "You are the paddle and must destroy all the rectangles. But mine has a twist... literally.");
 
 	slSetFont(font, fontSizeMENU - 30);
 	slText(30, textPositiony - 200, "Movement: ");
 	slSetFont(fontSpecial, fontSizeMENU - 50);
-	slText(textPositionX + 30, textPositiony - 345, "<        >");
+	slText(textPositionX + 30, textPositiony - 300, "<        >");
 
 	slSetFont(font, fontSizeMENU - 30);
-	slText(30, textPositiony - 470, "Exit Buttons: ");
+	slText(30, textPositiony - 425, "Special Buttons: ");
 
 	slSetFont(font, fontSizeMENU - 75);
-	slText(textPositionX, textPositiony - 625, "ESC: EXIT PROGRAM");
-	slText(textPositionX, textPositiony - 725, "BACKSPACE: MENU");
+	slText(textPositionX, textPositiony - 550, "ESC: EXIT PROGRAM");
+	slText(textPositionX, textPositiony - 650, "BACKSPACE: MENU");
+	slText(textPositionX, textPositiony - 750, "ENTER: PAUSE");
+}
+
+void pauseDraw(int font, int fontSpecial)
+{
+	timer += slGetDeltaTime();
+
+	if (slGetKey(SL_KEY_BACKSPACE))
+	{
+		scene = Scenes::Menu;
+		return;
+	}
+	int fontSizeMENU = 150;
+	int fontSizeTEXT = 45;
+	int textPositionX = screenWidth / 2;
+	int textPositiony = screenHeight - 285;
+
+	slSetForeColor(BLACK.r, BLACK.g, BLACK.b, BLACK.a);
+
+	slSetForeColor(WHITE.r, WHITE.g, WHITE.b, WHITE.a);
+	slSetFont(font, fontSizeMENU);
+	slText(textPositionX - slGetTextWidth("Pause") / 2, screenHeight - 130, "Pause");
+
+	slSetFont(font, fontSizeTEXT);
+	slText(textPositionX - slGetTextWidth("Press ENTER to return to game") / 2, textPositiony, "Press ENTER to return to game");
+	slText(textPositionX - slGetTextWidth("Press BACKSPACE to return to menu") / 2, textPositiony - 55, "Press BACKSPACE to return to menu");
+	slText(textPositionX - slGetTextWidth("Press ESC to exit program") / 2, textPositiony - 110, "Press ESC to exit program");
+
+
+	slSetFont(font, fontSizeMENU - 30);
+	slText(textPositionX - slGetTextWidth("Movement:") / 2, textPositiony - 255, "Movement: ");
+	slSetFont(fontSpecial, fontSizeMENU - 50);
+	slText(textPositionX - slGetTextWidth("<        >") / 2 + 30, textPositiony - 400, "<        >");
+
+
+	if (slGetKey(SL_KEY_ENTER) && timer >= 1.0f)
+	{
+		scene = Scenes::SinglePlayerGame;
+		return;
+	}
 }
 
 
@@ -348,7 +397,7 @@ void gameOver(rectangle& firstPlayer, ball& Ball, int font)
 	{
 		slSetForeColor(WHITE.r, WHITE.g, WHITE.b, WHITE.a);
 		slSetFont(font, fontSize);
-		slText(screenWidth / 2 - slGetTextWidth("YOU WIN") / 2, screenHeight / 2 , "YOU WIN");
+		slText(screenWidth / 2 - slGetTextWidth("YOU WIN") / 2, screenHeight / 2, "YOU WIN");
 		slSetFont(font, fontSizeContinue);
 		slText(screenWidth - slGetTextWidth("Press BACKSPACE to continue..."), screenHeight - 55, "Press BACKSPACE to continue...");
 	}
@@ -356,7 +405,7 @@ void gameOver(rectangle& firstPlayer, ball& Ball, int font)
 	{
 		slSetForeColor(WHITE.r, WHITE.g, WHITE.b, WHITE.a);
 		slSetFont(font, fontSize);
-		slText(screenWidth / 2 - slGetTextWidth("GAME OVER") / 2, screenHeight / 2 , "GAME OVER");
+		slText(screenWidth / 2 - slGetTextWidth("GAME OVER") / 2, screenHeight / 2, "GAME OVER");
 		slSetFont(font, fontSizeContinue);
 		slText(screenWidth - slGetTextWidth("Press BACKSPACE to continue...") - 20, 55, "Press BACKSPACE to continue...");
 	}
@@ -392,6 +441,8 @@ void brickDraw(ball& Ball, rectangle& firstPlayer)
 	int totalWidth = numCols * (brickWidth + brickSpacing);
 	int startX = (screenWidth - totalWidth + brickWidth) / 2; // arregle el bug del espacio en negro agregandole el ancho de un brick
 
+
+
 	for (int row = 0; row < numRows; row++)
 	{
 		for (int col = 0; col < numCols; col++)
@@ -422,7 +473,7 @@ void brickInit(rectangle& brick, int startX, int col, const int& brickWidth, con
 	brick.Size.y = brickHeight;
 }
 
-void bricksArray()
+void bricksStarted()
 {
 	for (int row = 0; row < numRows; row++)
 	{

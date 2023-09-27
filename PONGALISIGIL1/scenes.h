@@ -5,6 +5,7 @@ enum class Scenes
 	Menu,
 	SinglePlayerGame,
 	Rules,
+	Pause,
 	GameOver,
 	Exit
 };

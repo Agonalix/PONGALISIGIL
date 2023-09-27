@@ -6,8 +6,10 @@ void menuLoop(Scenes& scene, int font)
 {
 	Vector2 mousePosition = { slGetMouseX(), slGetMouseY() };
 	Button singlePlayer;
-	Button Rules;
+	Button rules;
+	Button exit;
 
+	color currentColorExit = WHITE;
 	color currentColorSingle = WHITE;
 	color currentColorMulti = WHITE;
 
@@ -15,13 +17,13 @@ void menuLoop(Scenes& scene, int font)
 	{
 		scene = Scenes::Exit;
 	}
-	initializeMenu(singlePlayer, Rules);
-	buttonPressed(scene, mousePosition, singlePlayer, Rules);
-	contrastColorWhenColliding(mousePosition, singlePlayer, Rules, currentColorSingle, currentColorMulti);
+	initializeMenu(singlePlayer, rules, exit);
+	buttonPressed(scene, mousePosition, singlePlayer, rules, exit);
+	contrastColorWhenColliding(mousePosition, singlePlayer, rules, currentColorSingle, currentColorMulti, exit, currentColorExit);
 
-	menuDraw(singlePlayer, Rules, currentColorSingle, currentColorMulti, font);
+	menuDraw(singlePlayer, rules, currentColorSingle, currentColorMulti, font, exit, currentColorExit);
 }
-void menuDraw(Button& singlePlayer, Button& rules, color currentColorSingle, color currentColorMulti, int font)
+void menuDraw(Button& singlePlayer, Button& rules, color& currentColorSingle, color& currentColorRules, int font, Button& exit, color& currentColorExit)
 {
 
 	//----------------------------------------------------------------------------------------------
@@ -46,10 +48,16 @@ void menuDraw(Button& singlePlayer, Button& rules, color currentColorSingle, col
 	slSetForeColor(BLACK.r, BLACK.g, BLACK.b, BLACK.a);
 	slRectangleFill(rules.position.x, rules.position.y, rules.width, rules.height);
 
-	slSetForeColor(currentColorMulti.r, currentColorMulti.g, currentColorMulti.b, currentColorMulti.a);
+	slSetForeColor(currentColorRules.r, currentColorRules.g, currentColorRules.b, currentColorRules.a);
 	slSetFont(font, fontSizeMODE);
 	slText(rules.position.x, rules.position.y, "Rules");
 
+	slSetForeColor(currentColorExit.r, currentColorExit.g, currentColorExit.b, currentColorExit.a);
+	slSetFont(font, fontSizeMODE);
+	slText(exit.position.x, exit.position.y, "Exit");
+
+	slSetFont(font, fontSizeMODE);
+	slText(exit.position.x, exit.position.y, "Exit");
 
 	//----------------------------------------------------------------------------------------------
 	//Creditos
@@ -62,7 +70,7 @@ void menuDraw(Button& singlePlayer, Button& rules, color currentColorSingle, col
 	slText(screenWidth - slGetTextWidth("Institution: Image Campus") - 10, 0 + fontSizeCredits, "Institution Image Campus");
 
 }
-void contrastColorWhenColliding(Vector2& mousePosition, Button& singlePlayer, Button& multiPlayer, color currentColorSingle, color currentColorMulti)
+void contrastColorWhenColliding(Vector2& mousePosition, Button& singlePlayer, Button& multiPlayer, color& currentColorSingle, color& currentColorRules, Button& exit, color& currentColorExit)
 {
 	if (mouseRecCollision(mousePosition, singlePlayer) == true)
 	{
@@ -72,16 +80,26 @@ void contrastColorWhenColliding(Vector2& mousePosition, Button& singlePlayer, Bu
 	{
 		currentColorSingle = WHITE;
 	}
+
 	if (mouseRecCollision(mousePosition, multiPlayer) == true)
 	{
-		currentColorMulti = GRAY;
+		currentColorRules = GRAY;
 	}
 	else
 	{
-		currentColorMulti = WHITE;
+		currentColorRules = WHITE;
+	}
+
+	if (mouseRecCollision(mousePosition, exit) == true)
+	{
+		currentColorExit = GRAY;
+	}
+	else
+	{
+		currentColorExit = WHITE;
 	}
 }
-void buttonPressed(Scenes& scene, Vector2& mousePosition, Button& singlePlayer, Button& multiPlayer)
+void buttonPressed(Scenes& scene, Vector2& mousePosition, Button& singlePlayer, Button& multiPlayer, Button& exit)
 {
 	if (mouseRecCollision(mousePosition, singlePlayer) == true && slGetMouseButton(SL_MOUSE_BUTTON_LEFT))
 	{
@@ -90,6 +108,10 @@ void buttonPressed(Scenes& scene, Vector2& mousePosition, Button& singlePlayer, 
 	else if (mouseRecCollision(mousePosition, multiPlayer) == true && slGetMouseButton(SL_MOUSE_BUTTON_LEFT))
 	{
 		scene = Scenes::Rules;
+	}
+	else if (mouseRecCollision(mousePosition, exit) == true && slGetMouseButton(SL_MOUSE_BUTTON_LEFT))
+	{
+		scene = Scenes::Exit;
 	}
 }
 bool mouseRecCollision(Vector2& position, Button& button)
@@ -105,7 +127,7 @@ bool mouseRecCollision(Vector2& position, Button& button)
 
 	return false;
 }
-void initializeMenu(Button& singlePlayer, Button& multiPlayer)
+void initializeMenu(Button& singlePlayer, Button& multiPlayer, Button& exit)
 {
 	singlePlayer.width = 575;
 	singlePlayer.height = 80;
@@ -116,4 +138,9 @@ void initializeMenu(Button& singlePlayer, Button& multiPlayer)
 	multiPlayer.height = 90;
 	multiPlayer.color = BLACK;
 	multiPlayer.position = { 35, screenHeight - 550 };
+
+	exit.width = 225;
+	exit.height = 90;
+	exit.color = BLACK;
+	exit.position = { 35, screenHeight - 700 };
 }
