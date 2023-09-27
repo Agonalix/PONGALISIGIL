@@ -8,6 +8,7 @@ struct rectangle
     Vector2 Position;
     Vector2 Size;
     int speed;
-    int score;
+    int bricksBroken;
+    int lives;
 };
 void FirstPlayerMovement(rectangle& firstPlayer);

@@ -19,7 +19,9 @@ void InitializeGameSingle(rectangle& firstPlayer, ball& ball); // inicializacion
 void reset(rectangle& firstPlayer, ball& ball);
 bool lostLives(rectangle& firstPlayer, ball Ball);
 void brickInit(rectangle& brick, int startX, int col, const int& brickWidth, const int& brickSpacing, int row, const int& brickHeight);
-void brickDraw();
+void brickDraw(ball& Ball);
+void bricksArray();
+
 
 //-----------------------------------------------------------------------------------------------------------------------
 //Game Mechanics
@@ -52,7 +54,8 @@ void GameLoop()
 	//Inicio random de la pelota
 	RandomBallStart(Ball);
 	InitializeGameSingle(firstPlayer, Ball);
-	scene = Scenes::Menu;
+
+	bricksArray();
 
 	while (scene != Scenes::Exit && !slShouldClose() && !slGetKey(SL_KEY_ESCAPE))    // Detect window close button or ESC key
 	{
@@ -115,6 +118,8 @@ void singlePlayerMode(rectangle& firstPlayer, ball& Ball)
 		ReturnToStartingPosition(firstPlayer, Ball);
 
 		GameDraw(firstPlayer, Ball);
+
+		brickDraw(Ball);
 	}
 	else
 	{
@@ -129,7 +134,8 @@ void reset(rectangle& firstPlayer, ball& ball)
 	firstPlayer.Position = { ScreenWidth / 2 + firstPlayer.Size.x / 2, ScreenHeight - 15 };
 	firstPlayer.Size = { 185, 25 };
 	firstPlayer.speed = 720;
-	firstPlayer.score = 0;
+	firstPlayer.bricksBroken = 0;
+	firstPlayer.lives = 5;
 
 	//--------------------------------------------------------------------------------------
 	//ball
@@ -147,7 +153,7 @@ void InitializeGameSingle(rectangle& firstPlayer, ball& ball)
 	firstPlayer.Position = { ScreenWidth / 2 + firstPlayer.Size.x / 2, ScreenHeight - 15 };
 	firstPlayer.Size = { 185, 25 };
 	firstPlayer.speed = 720;
-	firstPlayer.score = 0;
+	firstPlayer.bricksBroken = 0;
 
 	//--------------------------------------------------------------------------------------
 	//ball
@@ -187,7 +193,6 @@ void GameDraw(rectangle& firstPlayer, ball& Ball)
 	//----------------------------------------------------------------------------------
 
 	//Bricks;
-	brickDraw();
 }
 
 void RandomBallStart(ball& Ball)
@@ -222,7 +227,7 @@ void RandomBallStart(ball& Ball)
 
 bool isWinner(rectangle& firstPlayer)
 {
-	if (firstPlayer.score == 10)
+	if (firstPlayer.bricksBroken == 10)
 	{
 		return true;
 	}
@@ -242,7 +247,7 @@ void GameOver(rectangle& firstPlayer, ball& Ball, int font)
 	}
 
 	slSetBackColor(BLACK.r, BLACK.g, BLACK.b);
-	if (firstPlayer.score == 10)
+	if (firstPlayer.bricksBroken == 10)
 	{
 		slSetForeColor(WHITE.r, WHITE.g, WHITE.b, WHITE.a);
 		slSetFont(font, fontSize);
@@ -306,6 +311,7 @@ bool lostLives(rectangle& firstPlayer, ball Ball)
 {
 	if (Ball.Position.y >= ScreenHeight)
 	{
+		firstPlayer.lives--;
 		return true;
 	}
 
@@ -348,29 +354,42 @@ void rulesDraw(int font, int fontSpecial)
 	slText(textPositionX, textPositiony - 725, "BACKSPACE: MENU");
 }
 
-void brickDraw()
+
+const int numRows = 5;       // Cantidad de filas de ladrillos
+const int numCols = 12;      // Cantidad de columnas de ladrillos
+bool bricks[numRows][numCols];
+
+void brickDraw(ball& Ball)
 {
 	const int brickWidth = 120;
 	const int brickHeight = 35;
 	const int brickSpacing = 30;  // Espacio entre ladrillos
-	const int numRows = 10;       // Cantidad de filas de ladrillos
-	const int numCols = 12;      // Cantidad de columnas de ladrillos
+	rectangle brick;
 
 	color rowColors[] = { RED, GREEN, BLUE, YELLOW, ORANGE }; // Colores para cada fila de ladrillos
 
 	int totalWidth = numCols * (brickWidth + brickSpacing);
-	int startX = (ScreenWidth - totalWidth + brickWidth) / 2;
+	int startX = (ScreenWidth - totalWidth + brickWidth) / 2; // arregle el bug del espacio en negro agregandole el ancho de un brick
 
 	for (int row = 0; row < numRows; row++)
 	{
 		for (int col = 0; col < numCols; col++)
 		{
-			rectangle brick;
 			brickInit(brick, startX, col, brickWidth, brickSpacing, row, brickHeight);
 
+			if (bricks[row][col]) // Solo verifica y dibuja ladrillos que no están rotos
+			{
+				if (Collision(brick, Ball))
+				{
+					Ball.speed.y *= -1;
+					bricks[row][col] = false; // Marcar el ladrillo como roto
+					std::cout << "locura" << std::endl;
+					break;
+				}
 
-			slSetForeColor(rowColors[row].r, rowColors[row].g, rowColors[row].b, rowColors[row].a);
-			slRectangleFill(brick.Position.x, brick.Position.y, brick.Size.x, brick.Size.y);
+				slSetForeColor(rowColors[row].r, rowColors[row].g, rowColors[row].b, rowColors[row].a);
+				slRectangleFill(brick.Position.x, brick.Position.y, brick.Size.x, brick.Size.y);
+			}
 		}
 	}
 }
@@ -381,4 +400,15 @@ void brickInit(rectangle& brick, int startX, int col, const int& brickWidth, con
 	brick.Position.y = 100 + row * (brickHeight + brickSpacing);
 	brick.Size.x = brickWidth;
 	brick.Size.y = brickHeight;
+}
+
+void bricksArray()
+{
+	for (int row = 0; row < numRows; row++)
+	{
+		for (int col = 0; col < numCols; col++)
+		{
+			bricks[row][col] = true;
+		}
+	}
 }
