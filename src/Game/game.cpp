@@ -47,7 +47,6 @@ void gameLoop()
 	// Initialization
 	//--------------------------------------------------------------------------------------
 
-
 	rectangle firstPlayer;
 	ball Ball;
 

@@ -19,24 +19,24 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\Game\colors.cpp" />
-    <ClCompile Include="..\src\Game\game.cpp" />
-    <ClCompile Include="..\src\Game\menu.cpp" />
-    <ClCompile Include="..\src\Game\ScreenSize.cpp" />
-    <ClCompile Include="..\src\Main.cpp" />
-    <ClCompile Include="..\src\Objects\ball.cpp" />
-    <ClCompile Include="..\src\Objects\rectangle.cpp" />
+    <ClCompile Include="src\Game\colors.cpp" />
+    <ClCompile Include="src\Game\game.cpp" />
+    <ClCompile Include="src\Game\menu.cpp" />
+    <ClCompile Include="src\Game\ScreenSize.cpp" />
+    <ClCompile Include="src\Main.cpp" />
+    <ClCompile Include="src\Objects\ball.cpp" />
+    <ClCompile Include="src\Objects\rectangle.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\src\Game\Colors.h" />
-    <ClInclude Include="..\src\Game\game.h" />
-    <ClInclude Include="..\src\Game\menu.h" />
-    <ClInclude Include="..\src\Game\scenes.h" />
-    <ClInclude Include="..\src\Game\ScreenSize.h" />
-    <ClInclude Include="..\src\Game\Vector2.h" />
-    <ClInclude Include="..\src\Objects\ball.h" />
-    <ClInclude Include="..\src\Objects\button.h" />
-    <ClInclude Include="..\src\Objects\rectangle.h" />
+    <ClInclude Include="src\Game\Colors.h" />
+    <ClInclude Include="src\Game\game.h" />
+    <ClInclude Include="src\Game\menu.h" />
+    <ClInclude Include="src\Game\scenes.h" />
+    <ClInclude Include="src\Game\ScreenSize.h" />
+    <ClInclude Include="src\Game\Vector2.h" />
+    <ClInclude Include="src\Objects\ball.h" />
+    <ClInclude Include="src\Objects\button.h" />
+    <ClInclude Include="src\Objects\rectangle.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
