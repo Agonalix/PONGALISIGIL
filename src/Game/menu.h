@@ -1,9 +1,9 @@
 #pragma once
-#include "Vector2.h"
-#include "Scenes.h"
-#include "Button.h"
-#include "colors.h"
-#include "ScreenSize.h"
+#include "Game/Vector2.h";
+#include "Game/Scenes.h"
+#include "Objects/button.h"
+#include "Game/colors.h"
+#include "Game/ScreenSize.h"
 
 void menuLoop(Scenes& scene,  int font);
 void menuDraw( Button& singlePlayer, Button& multiPlayer,  color& currentColorSingle, color& currentColorRules, int font, Button& exit, color& currentColorExit);
@@ -11,4 +11,5 @@ void contrastColorWhenColliding(Vector2& mousePosition, Button& singlePlayer, Bu
 void initializeMenu(Button& singlePlayer, Button& multiPlayer, Button& exit);
 void buttonPressed(Scenes& scene, Vector2& mousePosition, Button& singlePlayer, Button& multiPlayer, Button& exit);
 bool mouseRecCollision(Vector2& position, Button& button);
-void rulesDraw(int font, int fontSpecial);
+void rulesDraw(int font, int fontSpecial, Scenes& scene);
+void pauseDraw(int font, int fontSpecial, Scenes& scene);

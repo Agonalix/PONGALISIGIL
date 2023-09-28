@@ -18,6 +18,26 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\Game\colors.cpp" />
+    <ClCompile Include="..\src\Game\game.cpp" />
+    <ClCompile Include="..\src\Game\menu.cpp" />
+    <ClCompile Include="..\src\Game\ScreenSize.cpp" />
+    <ClCompile Include="..\src\Main.cpp" />
+    <ClCompile Include="..\src\Objects\ball.cpp" />
+    <ClCompile Include="..\src\Objects\rectangle.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\src\Game\Colors.h" />
+    <ClInclude Include="..\src\Game\game.h" />
+    <ClInclude Include="..\src\Game\menu.h" />
+    <ClInclude Include="..\src\Game\scenes.h" />
+    <ClInclude Include="..\src\Game\ScreenSize.h" />
+    <ClInclude Include="..\src\Game\Vector2.h" />
+    <ClInclude Include="..\src\Objects\ball.h" />
+    <ClInclude Include="..\src\Objects\button.h" />
+    <ClInclude Include="..\src\Objects\rectangle.h" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
@@ -74,13 +94,17 @@
     <OutDir>$(SolutionDir)bin\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)obj\$(Configuration)\</IntDir>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(SolutionDir)bin\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)obj\$(Configuration)\</IntDir>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)lib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)src;$(SolutionDir)lib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -89,11 +113,13 @@
       <AdditionalDependencies>sigil.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy/y "$(SolutionDir)lib\glew32.dll" "$(OutDir)"
-copy/y "$(SolutionDir)lib\OpenAL32.dll" "$(OutDir)"
-copy/y "$(SolutionDir)lib\sigil.dll" "$(OutDir)"
-copy/y "$(SolutionDir)lib\wrap_oal.dll" "$(OutDir)"</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>xcopy /y "$(SolutionDir)lib\dll" "$(OutDir)"
+xcopy /y /i "$(SolutionDir)Assets" "$(OutDir)Assets"</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -103,13 +129,21 @@ copy/y "$(SolutionDir)lib\wrap_oal.dll" "$(OutDir)"</Command>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)src;$(SolutionDir)lib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)lib\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
+      <AdditionalDependencies>sigil.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PreBuildEvent>
+      <Command>xcopy /y "$(SolutionDir)lib\dll" "$(OutDir)"
+xcopy /y /i "$(SolutionDir)Assets" "$(OutDir)Assets"</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -142,26 +176,6 @@ copy/y "$(SolutionDir)lib\wrap_oal.dll" "$(OutDir)"</Command>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="ball.cpp" />
-    <ClCompile Include="colors.cpp" />
-    <ClCompile Include="game.cpp" />
-    <ClCompile Include="Main.cpp" />
-    <ClCompile Include="menu.cpp" />
-    <ClCompile Include="rectangle.cpp" />
-    <ClCompile Include="ScreenSize.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="ball.h" />
-    <ClInclude Include="button.h" />
-    <ClInclude Include="colors.h" />
-    <ClInclude Include="game.h" />
-    <ClInclude Include="menu.h" />
-    <ClInclude Include="rectangle.h" />
-    <ClInclude Include="scenes.h" />
-    <ClInclude Include="ScreenSize.h" />
-    <ClInclude Include="Vector2.h" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

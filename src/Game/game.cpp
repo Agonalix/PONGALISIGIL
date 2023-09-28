@@ -1,19 +1,21 @@
-#include "ball.h"
-#include "rectangle.h"
-#include "game.h"
-#include "menu.h"
-#include "scenes.h"
+#include "Objects/ball.h"
+#include "Objects/rectangle.h"
+#include "Game/game.h"
+#include "Game/menu.h"
+#include "Game/scenes.h"
 #include <iostream>
+#include <string>
 
 using namespace colors;
+using namespace std;
 
 //-----------------------------------------------------------------------------------------------------------------------
 //Start Game
 void gameLoop();
 void gameOver(rectangle& firstPlayer, ball& Ball, int font);
-void singlePlayerMode(rectangle& firstPlayer, ball& Ball);
+void singlePlayerMode(rectangle& firstPlayer, ball& Ball, int font);
 void returnToStartingPosition(rectangle& firstPlayer, ball& Ball);
-void gameDraw(rectangle& firstPlayer, ball& Ball);
+void gameDraw(rectangle& firstPlayer, ball& Ball, int font);
 void ballDrawing(ball& Ball);
 void paddleDrawing(rectangle& firstPlayer);
 bool isWinner(rectangle& firstPlayer);
@@ -23,8 +25,6 @@ bool lostLives(rectangle& firstPlayer, ball Ball);
 void brickInit(rectangle& brick, int startX, int col, const int& brickWidth, const int& brickSpacing, int row, const int& brickHeight);
 void brickDraw(ball& Ball, rectangle& firstPlayer);
 void bricksStarted();
-void pauseDraw(int font, int fontSpecial);
-
 
 
 //-----------------------------------------------------------------------------------------------------------------------
@@ -35,7 +35,6 @@ void randomBallStart(ball& Ball);
 
 
 static Scenes scene = Scenes::Menu;
-float timer = 0;
 
 void runProgram()
 {
@@ -52,10 +51,11 @@ void gameLoop()
 	rectangle firstPlayer;
 	ball Ball;
 
+
 	slWindow(screenWidth, screenHeight, "Breakout", true);
-	int font = slLoadFont("../HuLi-Regular.ttf");
-	int fontRules = slLoadFont("../Mouly.ttf");
-	int fontArrows = slLoadFont("../Citylist.ttf");
+	int font = slLoadFont("../Assets/HuLi-Regular.ttf");
+	int fontRules = slLoadFont("../Assets/Mouly.ttf");
+	int fontArrows = slLoadFont("../Assets/Citylist.ttf");
 	//Inicio random de la pelota
 	randomBallStart(Ball);
 	initializeGameSingle(firstPlayer, Ball);
@@ -73,15 +73,15 @@ void gameLoop()
 			break;
 
 		case Scenes::SinglePlayerGame:
-			singlePlayerMode(firstPlayer, Ball);
+			singlePlayerMode(firstPlayer, Ball, font);
 			break;
 
 		case Scenes::Rules:
-			rulesDraw(fontRules, fontArrows);
+			rulesDraw(fontRules, fontArrows, scene);
 			break;
 
 		case Scenes::Pause:
-			pauseDraw(fontRules, fontArrows);
+			pauseDraw(fontRules, fontArrows, scene);
 			break;
 
 		case Scenes::GameOver:
@@ -96,19 +96,17 @@ void gameLoop()
 	slClose();
 }
 
-void singlePlayerMode(rectangle& firstPlayer, ball& Ball)
+void singlePlayerMode(rectangle& firstPlayer, ball& Ball, int font)
 {
 	// Update
 	//----------------------------------------------------------------------------------
 	//----------------------------------------------------------------------------------
+
 	if (slGetKey(SL_KEY_ENTER))
 	{
 		scene = Scenes::Pause;
 		return;
 	}
-
-	timer = 0;
-
 
 	if (isWinner(firstPlayer) != true)
 	{
@@ -128,7 +126,7 @@ void singlePlayerMode(rectangle& firstPlayer, ball& Ball)
 
 		returnToStartingPosition(firstPlayer, Ball);
 
-		gameDraw(firstPlayer, Ball);
+		gameDraw(firstPlayer, Ball, font);
 
 		brickDraw(Ball, firstPlayer);
 	}
@@ -152,8 +150,8 @@ void reset(rectangle& firstPlayer, ball& ball)
 	//ball
 	ball.Position = { screenWidth / 2, screenHeight / 2 };
 	ball.Size = { 25, 25 };
-	ball.speed.x = 575;
-	ball.speed.y = 525;
+	ball.speed.x = 475;
+	ball.speed.y = 450;
 }
 
 void initializeGameSingle(rectangle& firstPlayer, ball& ball)
@@ -170,8 +168,8 @@ void initializeGameSingle(rectangle& firstPlayer, ball& ball)
 	//ball
 	ball.Position = { screenWidth / 2, screenHeight / 2 };
 	ball.Size = { 25, 25 };
-	ball.speed.x = 525;
-	ball.speed.y = 525;
+	ball.speed.x = 475;
+	ball.speed.y = 450;
 
 	if (rand() % 1 == 0)
 	{
@@ -186,7 +184,7 @@ void initializeGameSingle(rectangle& firstPlayer, ball& ball)
 
 }
 
-void gameDraw(rectangle& firstPlayer, ball& Ball)
+void gameDraw(rectangle& firstPlayer, ball& Ball, int font)
 {
 	// Draw
 	//----------------------------------------------------------------------------------
@@ -200,6 +198,10 @@ void gameDraw(rectangle& firstPlayer, ball& Ball)
 	//Ball
 	//----------------------------------------------------------------------------------
 	ballDrawing(Ball);
+
+	slSetFont(font, 30);
+	slText(30, slGetTextHeight("Lives: "), "Lives: ");
+	slText(30 + slGetTextWidth("Lives: "), slGetTextHeight("Lives: "), to_string(firstPlayer.lives).c_str());
 }
 
 void ballDrawing(ball& Ball)
@@ -306,80 +308,6 @@ bool lostLives(rectangle& firstPlayer, ball Ball)
 	return false;
 }
 
-void rulesDraw(int font, int fontSpecial)
-{
-	if (slGetKey(SL_KEY_BACKSPACE))
-	{
-		scene = Scenes::Menu;
-		return;
-	}
-	int fontSizeMENU = 135;
-	int fontSizeTEXT = 45;
-	int textPositionX = 35;
-	int textPositiony = screenHeight - 285;
-
-	slSetForeColor(BLACK.r, BLACK.g, BLACK.b, BLACK.a);
-
-	slSetForeColor(WHITE.r, WHITE.g, WHITE.b, WHITE.a);
-	slSetFont(font, fontSizeMENU);
-	slText(30, screenHeight - 130, "Rules");
-
-	slSetFont(font, fontSizeTEXT);
-	slText(textPositionX, textPositiony + 20, "This is a breakout game, the rules are the same.");
-	slText(textPositionX, textPositiony - 35, "You are the paddle and must destroy all the rectangles. But mine has a twist... literally.");
-
-	slSetFont(font, fontSizeMENU - 30);
-	slText(30, textPositiony - 200, "Movement: ");
-	slSetFont(fontSpecial, fontSizeMENU - 50);
-	slText(textPositionX + 30, textPositiony - 300, "<        >");
-
-	slSetFont(font, fontSizeMENU - 30);
-	slText(30, textPositiony - 425, "Special Buttons: ");
-
-	slSetFont(font, fontSizeMENU - 75);
-	slText(textPositionX, textPositiony - 550, "ESC: EXIT PROGRAM");
-	slText(textPositionX, textPositiony - 650, "BACKSPACE: MENU");
-	slText(textPositionX, textPositiony - 750, "ENTER: PAUSE");
-}
-
-void pauseDraw(int font, int fontSpecial)
-{
-	timer += slGetDeltaTime();
-
-	if (slGetKey(SL_KEY_BACKSPACE))
-	{
-		scene = Scenes::Menu;
-		return;
-	}
-	int fontSizeMENU = 150;
-	int fontSizeTEXT = 45;
-	int textPositionX = screenWidth / 2;
-	int textPositiony = screenHeight - 285;
-
-	slSetForeColor(BLACK.r, BLACK.g, BLACK.b, BLACK.a);
-
-	slSetForeColor(WHITE.r, WHITE.g, WHITE.b, WHITE.a);
-	slSetFont(font, fontSizeMENU);
-	slText(textPositionX - slGetTextWidth("Pause") / 2, screenHeight - 130, "Pause");
-
-	slSetFont(font, fontSizeTEXT);
-	slText(textPositionX - slGetTextWidth("Press ENTER to return to game") / 2, textPositiony, "Press ENTER to return to game");
-	slText(textPositionX - slGetTextWidth("Press BACKSPACE to return to menu") / 2, textPositiony - 55, "Press BACKSPACE to return to menu");
-	slText(textPositionX - slGetTextWidth("Press ESC to exit program") / 2, textPositiony - 110, "Press ESC to exit program");
-
-
-	slSetFont(font, fontSizeMENU - 30);
-	slText(textPositionX - slGetTextWidth("Movement:") / 2, textPositiony - 255, "Movement: ");
-	slSetFont(fontSpecial, fontSizeMENU - 50);
-	slText(textPositionX - slGetTextWidth("<        >") / 2 + 30, textPositiony - 400, "<        >");
-
-
-	if (slGetKey(SL_KEY_ENTER) && timer >= 1.0f)
-	{
-		scene = Scenes::SinglePlayerGame;
-		return;
-	}
-}
 
 
 const int numRows = 5;       // Cantidad de filas de ladrillos
@@ -431,7 +359,7 @@ bool isWinner(rectangle& firstPlayer)
 }
 void brickDraw(ball& Ball, rectangle& firstPlayer)
 {
-	const int brickWidth = 120;
+	const int brickWidth = 130;
 	const int brickHeight = 35;
 	const int brickSpacing = 15;  // Espacio entre ladrillos
 	rectangle brick;
@@ -457,10 +385,10 @@ void brickDraw(ball& Ball, rectangle& firstPlayer)
 					bricks[row][col] = false; // Marcar el ladrillo como roto
 					firstPlayer.bricksBroken++;
 				}
-
 				slSetForeColor(rowColors[row].r, rowColors[row].g, rowColors[row].b, rowColors[row].a);
 				slRectangleFill(brick.Position.x, brick.Position.y, brick.Size.x, brick.Size.y);
 			}
+
 		}
 	}
 }

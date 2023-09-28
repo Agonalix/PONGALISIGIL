@@ -1,4 +1,4 @@
-#include "menu.h"
+#include "Game/menu.h"
 
 using namespace colors;
 
@@ -56,8 +56,9 @@ void menuDraw(Button& singlePlayer, Button& rules, color& currentColorSingle, co
 	slSetFont(font, fontSizeMODE);
 	slText(exit.position.x, exit.position.y, "Exit");
 
-	slSetFont(font, fontSizeMODE);
-	slText(exit.position.x, exit.position.y, "Exit");
+	slSetForeColor(WHITE.r, WHITE.g, WHITE.b, WHITE.a);
+	slSetFont(font, fontSizeMODE - 60);
+	slText(exit.position.x, slGetTextHeight("Press ESC to exit program") + 15, "Press ESC to exit program");
 
 	//----------------------------------------------------------------------------------------------
 	//Creditos
@@ -143,4 +144,76 @@ void initializeMenu(Button& singlePlayer, Button& multiPlayer, Button& exit)
 	exit.height = 90;
 	exit.color = BLACK;
 	exit.position = { 35, screenHeight - 700 };
+}
+void pauseDraw(int font, int fontSpecial, Scenes& scene)
+{
+	int fontSizeMENU = 150;
+	int fontSizeTEXT = 45;
+	int textPositionX = screenWidth / 2;
+	int textPositiony = screenHeight - 285;
+
+	if (slGetKey(SL_KEY_BACKSPACE))
+	{
+		scene = Scenes::Menu;
+		return;
+	}
+
+	slSetForeColor(BLACK.r, BLACK.g, BLACK.b, BLACK.a);
+
+	slSetForeColor(WHITE.r, WHITE.g, WHITE.b, WHITE.a);
+	slSetFont(font, fontSizeMENU);
+	slText(textPositionX - slGetTextWidth("Pause") / 2, screenHeight - 130, "Pause");
+
+	slSetFont(font, fontSizeTEXT);
+	slText(textPositionX - slGetTextWidth("Press RIGHTSHIFT to return to game") / 2, textPositiony, "Press RIGHTSHIFT to return to game");
+	slText(textPositionX - slGetTextWidth("Press BACKSPACE to return to menu") / 2, textPositiony - 55, "Press BACKSPACE to return to menu");
+	slText(textPositionX - slGetTextWidth("Press ESC to exit program") / 2, textPositiony - 110, "Press ESC to exit program");
+
+
+	slSetFont(font, fontSizeMENU - 30);
+	slText(textPositionX - slGetTextWidth("Movement:") / 2, textPositiony - 255, "Movement: ");
+	slSetFont(fontSpecial, fontSizeMENU - 50);
+	slText(textPositionX - slGetTextWidth("<        >") / 2 + 30, textPositiony - 400, "<        >");
+
+
+	if (slGetKey(SL_KEY_RIGHT_SHIFT))
+	{
+		scene = Scenes::SinglePlayerGame;
+		return;
+	}
+}
+void rulesDraw(int font, int fontSpecial, Scenes& scene)
+{
+	if (slGetKey(SL_KEY_BACKSPACE))
+	{
+		scene = Scenes::Menu;
+		return;
+	}
+	int fontSizeMENU = 135;
+	int fontSizeTEXT = 45;
+	int textPositionX = 35;
+	int textPositiony = screenHeight - 285;
+
+	slSetForeColor(BLACK.r, BLACK.g, BLACK.b, BLACK.a);
+
+	slSetForeColor(WHITE.r, WHITE.g, WHITE.b, WHITE.a);
+	slSetFont(font, fontSizeMENU);
+	slText(30, screenHeight - 130, "Rules");
+
+	slSetFont(font, fontSizeTEXT);
+	slText(textPositionX, textPositiony + 20, "This is a breakout game, the rules are the same.");
+	slText(textPositionX, textPositiony - 35, "You are the paddle and must destroy all the bricks. But mine has a twist... literally.");
+
+	slSetFont(font, fontSizeMENU - 30);
+	slText(30, textPositiony - 200, "Movement: ");
+	slSetFont(fontSpecial, fontSizeMENU - 50);
+	slText(textPositionX + 30, textPositiony - 300, "<        >");
+
+	slSetFont(font, fontSizeMENU - 30);
+	slText(30, textPositiony - 425, "Special Buttons: ");
+
+	slSetFont(font, fontSizeMENU - 75);
+	slText(textPositionX, textPositiony - 550, "ESC: EXIT PROGRAM");
+	slText(textPositionX, textPositiony - 650, "BACKSPACE: MENU");
+	slText(textPositionX, textPositiony - 750, "ENTER: PAUSE");
 }

@@ -1,7 +1,7 @@
 #pragma once
 #include "include/sl.h"
-#include "Vector2.h"
-#include "colors.h"
+#include "Game/Vector2.h";
+#include "Game/colors.h"
 
 struct Button
 {

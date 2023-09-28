@@ -1,7 +1,7 @@
-#include "ball.h"
-#include "Vector2.h"
+#include "Objects/ball.h"
+#include "Game/Vector2.h"
 #include "include/sl.h"
-#include "ScreenSize.h"
+#include "Game/ScreenSize.h"
 
 void ballMovement(ball& Ball)
 {

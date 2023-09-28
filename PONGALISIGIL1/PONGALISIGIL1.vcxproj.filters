@@ -1,69 +1,63 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Archivos de origen">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    <Filter Include="objects">
+      <UniqueIdentifier>{c5034dad-c9a5-4dbb-ba82-2a9245650b5d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Archivos de encabezado">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
-    <Filter Include="Archivos de recursos">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    <Filter Include="game">
+      <UniqueIdentifier>{9364ea76-082e-47a0-a0a3-fcd3754bd5e4}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="rectangle.cpp">
-      <Filter>Archivos de origen</Filter>
+    <ClCompile Include="..\src\Objects\ball.cpp">
+      <Filter>objects</Filter>
     </ClCompile>
-    <ClCompile Include="menu.cpp">
-      <Filter>Archivos de origen</Filter>
+    <ClCompile Include="..\src\Objects\rectangle.cpp">
+      <Filter>objects</Filter>
     </ClCompile>
-    <ClCompile Include="Main.cpp">
-      <Filter>Archivos de origen</Filter>
+    <ClCompile Include="..\src\Game\colors.cpp">
+      <Filter>game</Filter>
     </ClCompile>
-    <ClCompile Include="ball.cpp">
-      <Filter>Archivos de origen</Filter>
+    <ClCompile Include="..\src\Game\game.cpp">
+      <Filter>game</Filter>
     </ClCompile>
-    <ClCompile Include="game.cpp">
-      <Filter>Archivos de origen</Filter>
+    <ClCompile Include="..\src\Game\menu.cpp">
+      <Filter>game</Filter>
     </ClCompile>
-    <ClCompile Include="colors.cpp">
-      <Filter>Archivos de origen</Filter>
+    <ClCompile Include="..\src\Game\ScreenSize.cpp">
+      <Filter>game</Filter>
     </ClCompile>
-    <ClCompile Include="ScreenSize.cpp">
-      <Filter>Archivos de origen</Filter>
+    <ClCompile Include="..\src\Main.cpp">
+      <Filter>game</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="game.h">
-      <Filter>Archivos de encabezado</Filter>
+    <ClInclude Include="..\src\Objects\ball.h">
+      <Filter>objects</Filter>
     </ClInclude>
-    <ClInclude Include="rectangle.h">
-      <Filter>Archivos de encabezado</Filter>
+    <ClInclude Include="..\src\Objects\button.h">
+      <Filter>objects</Filter>
     </ClInclude>
-    <ClInclude Include="ball.h">
-      <Filter>Archivos de encabezado</Filter>
+    <ClInclude Include="..\src\Objects\rectangle.h">
+      <Filter>objects</Filter>
     </ClInclude>
-    <ClInclude Include="menu.h">
-      <Filter>Archivos de encabezado</Filter>
+    <ClInclude Include="..\src\Game\Colors.h">
+      <Filter>game</Filter>
     </ClInclude>
-    <ClInclude Include="button.h">
-      <Filter>Archivos de encabezado</Filter>
+    <ClInclude Include="..\src\Game\game.h">
+      <Filter>game</Filter>
     </ClInclude>
-    <ClInclude Include="scenes.h">
-      <Filter>Archivos de encabezado</Filter>
+    <ClInclude Include="..\src\Game\menu.h">
+      <Filter>game</Filter>
     </ClInclude>
-    <ClInclude Include="colors.h">
-      <Filter>Archivos de encabezado</Filter>
+    <ClInclude Include="..\src\Game\scenes.h">
+      <Filter>game</Filter>
     </ClInclude>
-    <ClInclude Include="Vector2.h">
-      <Filter>Archivos de encabezado</Filter>
+    <ClInclude Include="..\src\Game\ScreenSize.h">
+      <Filter>game</Filter>
     </ClInclude>
-    <ClInclude Include="ScreenSize.h">
-      <Filter>Archivos de encabezado</Filter>
+    <ClInclude Include="..\src\Game\Vector2.h">
+      <Filter>game</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

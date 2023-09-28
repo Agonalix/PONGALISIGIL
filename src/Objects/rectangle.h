@@ -1,6 +1,6 @@
 #pragma once
-#include "Vector2.h"
-#include "ball.h"
+#include "Game/Vector2.h";
+#include "Objects/ball.h"
 #include "include/sl.h"
 
 struct rectangle

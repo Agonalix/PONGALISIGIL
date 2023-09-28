@@ -1,5 +1,5 @@
-#include "Rectangle.h"
-#include "ScreenSize.h"
+#include "Objects/Rectangle.h"
+#include "Game/ScreenSize.h"
 
 void firstPlayerMovement(rectangle& firstPlayer)
 {
