@@ -53,9 +53,9 @@ void gameLoop()
 
 
 	slWindow(screenWidth, screenHeight, "Breakout", true);
-	int font = slLoadFont("../Assets/HuLi-Regular.ttf");
-	int fontRules = slLoadFont("../Assets/Mouly.ttf");
-	int fontArrows = slLoadFont("../Assets/Citylist.ttf");
+	int font = slLoadFont("Assets/HuLi-Regular.ttf");
+	int fontRules = slLoadFont("Assets/Mouly.ttf");
+	int fontArrows = slLoadFont("Assets/Citylist.ttf");
 	//Inicio random de la pelota
 	randomBallStart(Ball);
 	initializeGameSingle(firstPlayer, Ball);
