@@ -24,7 +24,7 @@ void reset(rectangle& firstPlayer, ball& ball);
 bool lostLives(rectangle& firstPlayer, ball Ball);
 void brickInit(rectangle& brick, int startX, int col, const int& brickWidth, const int& brickSpacing, int row, const int& brickHeight);
 void brickDraw(ball& Ball, rectangle& firstPlayer);
-void bricksStarted();
+void bricksStarter();
 
 
 //-----------------------------------------------------------------------------------------------------------------------
@@ -59,7 +59,7 @@ void gameLoop()
 	//Inicio random de la pelota
 	randomBallStart(Ball);
 	initializeGameSingle(firstPlayer, Ball);
-	bricksStarted();
+	bricksStarter();
 
 
 	while (scene != Scenes::Exit && !slShouldClose() && !slGetKey(SL_KEY_ESCAPE))    // Detect window close button or ESC key
@@ -67,7 +67,7 @@ void gameLoop()
 		switch (scene)
 		{
 		case Scenes::Menu:
-			bricksStarted();
+			bricksStarter();
 			reset(firstPlayer, Ball);
 			menuLoop(scene, font);
 			break;
@@ -345,7 +345,7 @@ void gameOver(rectangle& firstPlayer, ball& Ball, int font)
 	}
 }
 
-bool isWinner(rectangle& firstPlayer)
+bool isWinner(rectangle& firstPlayer) // changed the condition
 {
 	if (firstPlayer.bricksBroken == numRows * numCols)
 	{
@@ -355,7 +355,7 @@ bool isWinner(rectangle& firstPlayer)
 	{
 		return true;
 	}
-	return false;
+	return false; 
 }
 void brickDraw(ball& Ball, rectangle& firstPlayer)
 {
@@ -401,13 +401,13 @@ void brickInit(rectangle& brick, int startX, int col, const int& brickWidth, con
 	brick.Size.y = brickHeight;
 }
 
-void bricksStarted()
+void bricksStarter()
 {
 	for (int row = 0; row < numRows; row++)
 	{
 		for (int col = 0; col < numCols; col++)
 		{
-			bricks[row][col] = true;
+			bricks[row][col] = true; //bricks all over again
 		}
 	}
 }
